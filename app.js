@@ -51,10 +51,10 @@ const PROJECTS_DATA = [
     category: 'pro',
     categoryLabel: 'Campagnes Digitales',
     year: '2024',
-    cover: 'MES PROJETS/CANAL+PROJECTS/CANAL+PROJECTS-02.png',
+    cover: 'MES PROJETS/CANAL+PROJECTS/CANAL+PROJECTS-01.png',
     images: [
-      'MES PROJETS/CANAL+PROJECTS/CANAL+PROJECTS-02.png',
-      'MES PROJETS/CANAL+PROJECTS/CANAL+PROJECTS-01.png'
+      'MES PROJETS/CANAL+PROJECTS/CANAL+PROJECTS-01.png',
+      'MES PROJETS/CANAL+PROJECTS/CANAL+PROJECTS-02.png'
     ],
     role: 'Direction Artistique & Visuels Réseaux Sociaux',
     tags: ['Campagnes Digitales', 'Netflix dans Canal+', 'Tabaski', 'Ligue des Champions'],

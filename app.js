@@ -22,34 +22,44 @@ const PROJECTS_DATA = [
     description: `Home est un établissement hôtelier élégant et moderne, offrant un cadre raffiné, confortable et chaleureux. J'y ai travaillé en freelance sur plusieurs projets, parmi lesquels se trouve la création de visuels pour leurs grands événements de fin d'année 2025, renforçant leur image prestigieuse (Menu de Noël, Le Live de Noël sur le Rooftop, Sparkles Night). J'ai également conçu des propositions de templates stories pour dynamiser leur communication digitale quotidienne.`
   },
   {
-    id: 'canal-plus-canalbox',
-    title: 'Canal+ & Canalbox Bénin',
-    client: 'Canal+ & Canalbox Bénin (Groupe Vivendi)',
+    id: 'canalbox-benin',
+    title: 'Canalbox Bénin',
+    client: 'Canalbox Bénin (Groupe Vivendi / GVA)',
     category: 'pro',
-    categoryLabel: 'Brand & Campagnes Digitales',
+    categoryLabel: 'Brand & Digital',
     year: '2024',
     cover: 'MES PROJETS/CANALBOX PROJECTS/CANALBOX-01.png',
     images: [
       'MES PROJETS/CANALBOX PROJECTS/CANALBOX-01.png',
-      'MES PROJETS/CANAL+PROJECTS/CANAL+PROJECTS-01.png',
       'MES PROJETS/CANALBOX PROJECTS/CANALBOX-02.png',
-      'MES PROJETS/CANAL+PROJECTS/CANAL+PROJECTS-02.png',
       'MES PROJETS/CANALBOX PROJECTS/CANALBOX-03.png',
       'MES PROJETS/CANALBOX PROJECTS/CANALBOX-04.png'
     ],
-    role: 'Direction Artistique, Campagnes Digitales & Scénographie',
-    tags: ['Canal+', 'Canalbox', 'Campagnes Digitales', '+100 Visuels', 'Netflix dans Canal+', 'Inauguration & Espace'],
-    summary: 'Accompagnement créatif global pour Canal+ et Canalbox Bénin (Groupe Vivendi) : création de contenus digitaux, campagnes réseaux sociaux, supports de vente et scénographie événementielle.',
-    description: `Collaboration d'envergure avec le Groupe Vivendi au Bénin, réunissant les univers de Canal+ (audiovisuel & divertissement premium) et Canalbox (fibre optique très haut débit) :
+    role: 'Direction Artistique, Communication Digitale & Espace',
+    tags: ['Communication Digitale', '+100 Visuels', 'Inauguration', 'Photocalls', 'Design Bureaux', 'Brochures & Print'],
+    summary: 'Accompagnement 360° pour Canalbox Bénin : création de plus de 100 visuels pour les réseaux sociaux, supports imprimés, scénographie d\'inauguration et aménagement graphique des bureaux.',
+    description: `Partenaire de Canalbox (Groupe Vivendi / GVA), fournisseur d'accès internet très haut débit en Afrique de l'Ouest, j'ai réalisé un accompagnement créatif complet mêlant communication digitale et identité spatiale :
 
-• CANAL+ BÉNIN — Campagnes Digitales & Événements :
-Réalisation des visuels promotionnels pour les réseaux sociaux (Facebook), couvrant les offres décodeurs, les grandes célébrations (Tabaski, Pâques, Ascension) et les temps forts sportifs (Ligue des Champions). Prototypage et scénographie de la démonstration officielle lors de l'intégration de « Netflix débarque dans Canal+ ».
+• Communication Digitale & Social Media : Création de plus de 100 visuels hebdomadaires pour Instagram et Facebook, gestion éditoriale, mise en valeur des offres fibre optique et événements pour booster l'engagement en ligne. Conception de brochures de promotion et de mémos clients synthétisant les offres, tarifs et zones de couverture avec QR code direct.
 
-• CANALBOX BÉNIN — Communication Social Media & Supports :
-Création de plus de 100 visuels hebdomadaires pour Instagram et Facebook valorisant les offres de connexion illimitée et l'engagement communautaire. Conception des brochures de promotion et d'un support mémo client détaillant tarifs, zones de couverture et QR code direct.
-
-• ÉVÉNEMENTIEL & AMÉNAGEMENT D'ESPACE :
-Scénographie de l'inauguration officielle au Bénin (photocalls shootings, tenues des hôtesses, design des projecteurs) et conception de l'aménagement graphique mural des bureaux : « Taffez, Streamez, Dansez, Idéalisez ! »`
+• Événementiel, Scénographie & Aménagement : Pour l'inauguration très médiatisée au Bénin, conception des photocalls événementiels pour les shootings photo, création de tenues spécifiques pour les hôtesses d'accueil et design des projecteurs de réception. Habillage mural et aménagement graphique des bureaux Canalbox au Bénin dans le respect de leur charte dynamique : « Taffez, Streamez, Dansez, Idéalisez ! »`
+  },
+  {
+    id: 'canal-plus',
+    title: 'Canal+ Bénin',
+    client: 'Canal+ Bénin',
+    category: 'pro',
+    categoryLabel: 'Campagnes Digitales',
+    year: '2024',
+    cover: 'MES PROJETS/CANAL+PROJECTS/CANAL+PROJECTS-01.png',
+    images: [
+      'MES PROJETS/CANAL+PROJECTS/CANAL+PROJECTS-01.png',
+      'MES PROJETS/CANAL+PROJECTS/CANAL+PROJECTS-02.png'
+    ],
+    role: 'Direction Artistique & Visuels Réseaux Sociaux',
+    tags: ['Campagnes Digitales', 'Netflix dans Canal+', 'Tabaski', 'Ligue des Champions'],
+    summary: 'Visuels promotionnels et célébrations pour Canal+ Bénin (Tabaski, Pâques, Ascension, LDC) et support démo pour l\'offre Netflix.',
+    description: `Canal+ est un groupe audiovisuel proposant films, séries, sports et documentaires via ses chaînes et plateformes. Il se distingue par ses contenus premium, son innovation et sa présence internationale. J'ai contribué à la réalisation de visuels digitaux pour les réseaux sociaux principalement Facebook de Canal+ Bénin (offres décodeur, Tabaski, Pâques, Ascension, Ligue des Champions). Lors du lancement de la nouveauté « Netflix débarque dans Canal+ », j'ai prototypé et participé à l'organisation complète de la démonstration pour valoriser l'expérience des abonnés.`
   },
   {
     id: 'coffee-loffee',
@@ -300,13 +310,12 @@ let currentImageIndex = 0;
 
 function openProjectModal(projectId) {
   let project = PROJECTS_DATA.find(p => p.id === projectId);
-  if (!project && (
-    projectId === 'canalbox-benin' ||
-    projectId === 'canal-plus' ||
-    projectId === 'canalbox-inauguration' ||
-    projectId === 'canalbox-digital'
-  )) {
-    project = PROJECTS_DATA.find(p => p.id === 'canal-plus-canalbox');
+  if (!project) {
+    if (projectId === 'canalbox-inauguration' || projectId === 'canalbox-digital') {
+      project = PROJECTS_DATA.find(p => p.id === 'canalbox-benin');
+    } else if (projectId === 'canal-plus-canalbox') {
+      project = PROJECTS_DATA.find(p => p.id === 'canalbox-benin') || PROJECTS_DATA.find(p => p.id === 'canal-plus');
+    }
   }
   if (!project) return;
 

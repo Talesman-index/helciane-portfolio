@@ -93,10 +93,10 @@ const PROJECTS_DATA = [
     category: 'branding',
     categoryLabel: 'Packaging & Brand',
     year: '2024',
-    cover: 'MES PROJETS/DEMETER BOWL/DEMETER\'S BOWLfinals.png',
+    cover: 'MES PROJETS/DEMETER BOWL/DEMETER\'S BOWLfinal2.png',
     images: [
-      'MES PROJETS/DEMETER BOWL/DEMETER\'S BOWLfinals.png',
       'MES PROJETS/DEMETER BOWL/DEMETER\'S BOWLfinal2.png',
+      'MES PROJETS/DEMETER BOWL/DEMETER\'S BOWLfinals.png',
       'MES PROJETS/DEMETER BOWL/DEMETER\'S BOWLfinals-07.png',
       'MES PROJETS/DEMETER BOWL/DEMETER\'S BOWLfinals-08.png',
       'MES PROJETS/DEMETER BOWL/DEMETER\'S BOWLfinals-09.png',

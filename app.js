@@ -215,7 +215,7 @@ const PROJECTS_DATA = [
     cover: 'MES ILLUSTRATIONS PERSOS/Illumes.png',
     images: [
       'MES ILLUSTRATIONS PERSOS/Illumes.png',
-      'MES ILLUSTRATIONS PERSOS/noway [Récupéré] copie.png'
+      'MES ILLUSTRATIONS PERSOS/Illumes-02.png'
     ],
     role: 'Illustration, Inspirations & Lettrage Pop',
     tags: ['Inspirations', 'Affiches d\'Art', 'Lettrage', 'Textures', 'Vibe Pop'],

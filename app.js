@@ -5,6 +5,66 @@
 // 1. DATA DES PROJETS & CRÉATIONS
 const PROJECTS_DATA = [
   {
+    id: 'peace-page',
+    title: 'Peace Page',
+    client: 'Projet de Fin d\'Études Bachelor',
+    category: 'academic',
+    categoryLabel: 'Édition & Santé',
+    year: '2023',
+    cover: 'MES PROJETS/PEACE PAGE/PEACE PAGE-01.png',
+    images: [
+      'MES PROJETS/PEACE PAGE/PEACE PAGE-01.png',
+      'MES PROJETS/PEACE PAGE/PEACE PAGE-02.png',
+      'MES PROJETS/PEACE PAGE/PEACE PAGE-03.png',
+      'MES PROJETS/PEACE PAGE/PEACE PAGE-04.png',
+      'MES PROJETS/PEACE PAGE/PEACE PAGE-05.png',
+      'MES PROJETS/PEACE PAGE/PEACE PAGE-06.png',
+      'MES PROJETS/PEACE PAGE/PEACE PAGE-07.png'
+    ],
+    role: 'Conception Éditoriale & Illustration Sociale',
+    tags: ['Santé Mentale', 'Bachelor', 'Afrique', 'Carnet d\'Accompagnement'],
+    summary: 'Notebook d\'accompagnement psychologique pour faciliter la communication intergénérationnelle sur la santé mentale en Afrique.',
+    description: `Projet de fin d'études Bachelor. Peace Page est un notebook pensé pour accompagner les jeunes traversant des difficultés psychologiques grâce à l'analyse complète de leurs troubles et aux conclusions à en tirer. Problématique : « Comment faciliter la communication intergénérationnelle en ce qui concerne les problèmes liés à la santé mentale en Afrique ? » (« It's okay to not be okay »).`
+  },
+  {
+    id: 'baudelaire',
+    title: 'Bibliothèque Baudelaire',
+    client: 'Workshop / Bibliothèque',
+    category: 'academic',
+    categoryLabel: 'Signalétique & Icones',
+    year: '2022',
+    cover: 'MES PROJETS/BAUDELAIRE/BAUDELAIRE-02.png',
+    images: [
+      'MES PROJETS/BAUDELAIRE/BAUDELAIRE-02.png',
+      'MES PROJETS/BAUDELAIRE/BAUDELAIRE-01.png',
+      'MES PROJETS/BAUDELAIRE/BAUDELAIRE-03.png',
+      'MES PROJETS/BAUDELAIRE/BAUDELAIRE-04.png'
+    ],
+    role: 'Signalétique Spatiale & Pictogrammes',
+    tags: ['Signalétique', 'Bibliothèque', 'Iconographie', 'Poésie & Contes'],
+    summary: 'Système complet de signalétique et travail d\'iconographie pour une bibliothèque reconnue pour sa poésie et ses contes.',
+    description: `Baudelaire est une bibliothèque fictive reconnue surtout pour ses livres de poésie et de contes français. Le but de ce projet : concevoir des signalétiques et un travail d'iconographie complet guidant les usagers (Poésie, Littérature, Enfants, Sciences, Familles, Boîte de retours).`
+  },
+  {
+    id: 'guess-the-problem',
+    title: 'Guess The Problem',
+    client: 'Workshop Créatif',
+    category: 'academic',
+    categoryLabel: 'Design Thinking',
+    year: '2022',
+    cover: 'MES PROJETS/GUESS THE PROBLEM/GUESS THE PROBLEM-01.png',
+    images: [
+      'MES PROJETS/GUESS THE PROBLEM/GUESS THE PROBLEM-01.png',
+      'MES PROJETS/GUESS THE PROBLEM/GUESS THE PROBLEM-02.png',
+      'MES PROJETS/GUESS THE PROBLEM/GUESS THE PROBLEM-03.png',
+      'MES PROJETS/GUESS THE PROBLEM/GUESS THE PROBLEM-04.png'
+    ],
+    role: 'Game Design Visuel & Facilitation Graphique',
+    tags: ['Design Thinking', 'Jeu de Cartes', 'Idéation', 'Résolution'],
+    summary: 'Jeu de cartes ludique et visuel pour animer des ateliers d\'idéation et diagnostiquer collectivement les blocages d\'un projet.',
+    description: `Création d'un ensemble de supports graphiques et de cartes de jeu pour un atelier de Design Thinking. Ce workshop permet aux équipes créatives d'identifier les racines des problèmes de communication et de concevoir des solutions innovantes de façon collaborative.`
+  },
+  {
     id: 'canalbox-benin',
     title: 'Canalbox Bénin',
     client: 'Canalbox Bénin (Groupe Vivendi / GVA)',
@@ -126,66 +186,6 @@ const PROJECTS_DATA = [
     tags: ['SGDS Bénin', 'Poubelle Engageante', 'Gestion des Déchets', '+7 Illustrations'],
     summary: 'Poubelle engageante pour sensibiliser les populations à la gestion des déchets plastiques, avec +7 illustrations de mise en scène.',
     description: `Projet réalisé avec la SGDS (Société de Gestion des Déchets et de la Salubrité Bénin). Waste Tobag a été conçu pour accompagner la population à la gestion des déchets plastiques après utilisation dans les espaces communautaires. Réalisation du dispositif de poubelle engageante et de plus de 7 illustrations de mise en scène didactiques créées par mes soins (Day 1, Week 1, Later...).`
-  },
-  {
-    id: 'peace-page',
-    title: 'Peace Page',
-    client: 'Projet de Fin d\'Études Bachelor',
-    category: 'academic',
-    categoryLabel: 'Édition & Santé',
-    year: '2023',
-    cover: 'MES PROJETS/PEACE PAGE/PEACE PAGE-01.png',
-    images: [
-      'MES PROJETS/PEACE PAGE/PEACE PAGE-01.png',
-      'MES PROJETS/PEACE PAGE/PEACE PAGE-02.png',
-      'MES PROJETS/PEACE PAGE/PEACE PAGE-03.png',
-      'MES PROJETS/PEACE PAGE/PEACE PAGE-04.png',
-      'MES PROJETS/PEACE PAGE/PEACE PAGE-05.png',
-      'MES PROJETS/PEACE PAGE/PEACE PAGE-06.png',
-      'MES PROJETS/PEACE PAGE/PEACE PAGE-07.png'
-    ],
-    role: 'Conception Éditoriale & Illustration Sociale',
-    tags: ['Santé Mentale', 'Bachelor', 'Afrique', 'Carnet d\'Accompagnement'],
-    summary: 'Notebook d\'accompagnement psychologique pour faciliter la communication intergénérationnelle sur la santé mentale en Afrique.',
-    description: `Projet de fin d'études Bachelor. Peace Page est un notebook pensé pour accompagner les jeunes traversant des difficultés psychologiques grâce à l'analyse complète de leurs troubles et aux conclusions à en tirer. Problématique : « Comment faciliter la communication intergénérationnelle en ce qui concerne les problèmes liés à la santé mentale en Afrique ? » (« It's okay to not be okay »).`
-  },
-  {
-    id: 'baudelaire',
-    title: 'Bibliothèque Baudelaire',
-    client: 'Workshop / Bibliothèque',
-    category: 'academic',
-    categoryLabel: 'Signalétique & Icones',
-    year: '2022',
-    cover: 'MES PROJETS/BAUDELAIRE/BAUDELAIRE-02.png',
-    images: [
-      'MES PROJETS/BAUDELAIRE/BAUDELAIRE-02.png',
-      'MES PROJETS/BAUDELAIRE/BAUDELAIRE-01.png',
-      'MES PROJETS/BAUDELAIRE/BAUDELAIRE-03.png',
-      'MES PROJETS/BAUDELAIRE/BAUDELAIRE-04.png'
-    ],
-    role: 'Signalétique Spatiale & Pictogrammes',
-    tags: ['Signalétique', 'Bibliothèque', 'Iconographie', 'Poésie & Contes'],
-    summary: 'Système complet de signalétique et travail d\'iconographie pour une bibliothèque reconnue pour sa poésie et ses contes.',
-    description: `Baudelaire est une bibliothèque fictive reconnue surtout pour ses livres de poésie et de contes français. Le but de ce projet : concevoir des signalétiques et un travail d'iconographie complet guidant les usagers (Poésie, Littérature, Enfants, Sciences, Familles, Boîte de retours).`
-  },
-  {
-    id: 'guess-the-problem',
-    title: 'Guess The Problem',
-    client: 'Workshop Créatif',
-    category: 'academic',
-    categoryLabel: 'Design Thinking',
-    year: '2022',
-    cover: 'MES PROJETS/GUESS THE PROBLEM/GUESS THE PROBLEM-01.png',
-    images: [
-      'MES PROJETS/GUESS THE PROBLEM/GUESS THE PROBLEM-01.png',
-      'MES PROJETS/GUESS THE PROBLEM/GUESS THE PROBLEM-02.png',
-      'MES PROJETS/GUESS THE PROBLEM/GUESS THE PROBLEM-03.png',
-      'MES PROJETS/GUESS THE PROBLEM/GUESS THE PROBLEM-04.png'
-    ],
-    role: 'Game Design Visuel & Facilitation Graphique',
-    tags: ['Design Thinking', 'Jeu de Cartes', 'Idéation', 'Résolution'],
-    summary: 'Jeu de cartes ludique et visuel pour animer des ateliers d\'idéation et diagnostiquer collectivement les blocages d\'un projet.',
-    description: `Création d'un ensemble de supports graphiques et de cartes de jeu pour un atelier de Design Thinking. Ce workshop permet aux équipes créatives d'identifier les racines des problèmes de communication et de concevoir des solutions innovantes de façon collaborative.`
   },
   {
     id: 'home-hotel',

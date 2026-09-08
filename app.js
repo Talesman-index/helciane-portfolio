@@ -5,23 +5,6 @@
 // 1. DATA DES PROJETS & CRÉATIONS
 const PROJECTS_DATA = [
   {
-    id: 'home-hotel',
-    title: 'HOME Residence Hotel',
-    client: 'HOME Residence Hotel (Bénin)',
-    category: 'pro',
-    categoryLabel: 'Direction Artistique',
-    year: '2025',
-    cover: 'MES PROJETS/HOME/HOME-01.png',
-    images: [
-      'MES PROJETS/HOME/HOME-01.png',
-      'MES PROJETS/HOME/HOME-02.png'
-    ],
-    role: 'Direction Artistique, Graphisme & Social Media',
-    tags: ['Direction Artistique', 'Événementiel Fin d\'Année', 'Rooftop', 'Stories'],
-    summary: 'Visuels pour les grands événements de fin d\'année 2025 (Menu de Noël, Le Live de Noël Rooftop, Sparkles Night) et templates stories.',
-    description: `Home est un établissement hôtelier élégant et moderne, offrant un cadre raffiné, confortable et chaleureux. J'y ai travaillé en freelance sur plusieurs projets, parmi lesquels se trouve la création de visuels pour leurs grands événements de fin d'année 2025, renforçant leur image prestigieuse (Menu de Noël, Le Live de Noël sur le Rooftop, Sparkles Night). J'ai également conçu des propositions de templates stories pour dynamiser leur communication digitale quotidienne.`
-  },
-  {
     id: 'canalbox-benin',
     title: 'Canalbox Bénin',
     client: 'Canalbox Bénin (Groupe Vivendi / GVA)',
@@ -203,6 +186,23 @@ const PROJECTS_DATA = [
     tags: ['Design Thinking', 'Jeu de Cartes', 'Idéation', 'Résolution'],
     summary: 'Jeu de cartes ludique et visuel pour animer des ateliers d\'idéation et diagnostiquer collectivement les blocages d\'un projet.',
     description: `Création d'un ensemble de supports graphiques et de cartes de jeu pour un atelier de Design Thinking. Ce workshop permet aux équipes créatives d'identifier les racines des problèmes de communication et de concevoir des solutions innovantes de façon collaborative.`
+  },
+  {
+    id: 'home-hotel',
+    title: 'HOME Residence Hotel',
+    client: 'HOME Residence Hotel (Bénin)',
+    category: 'pro',
+    categoryLabel: 'Direction Artistique',
+    year: '2025',
+    cover: 'MES PROJETS/HOME/HOME-01.png',
+    images: [
+      'MES PROJETS/HOME/HOME-01.png',
+      'MES PROJETS/HOME/HOME-02.png'
+    ],
+    role: 'Direction Artistique, Graphisme & Social Media',
+    tags: ['Direction Artistique', 'Événementiel Fin d\'Année', 'Rooftop', 'Stories'],
+    summary: 'Visuels pour les grands événements de fin d\'année 2025 (Menu de Noël, Le Live de Noël Rooftop, Sparkles Night) et templates stories.',
+    description: `Home est un établissement hôtelier élégant et moderne, offrant un cadre raffiné, confortable et chaleureux. J'y ai travaillé en freelance sur plusieurs projets, parmi lesquels se trouve la création de visuels pour leurs grands événements de fin d'année 2025, renforçant leur image prestigieuse (Menu de Noël, Le Live de Noël sur le Rooftop, Sparkles Night). J'ai également conçu des propositions de templates stories pour dynamiser leur communication digitale quotidienne.`
   },
   {
     id: 'illustrations-perso',

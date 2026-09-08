@@ -304,6 +304,47 @@ function renderProjectsTrack() {
   });
 }
 
+// 3.1 GESTION DU DÉFILEMENT AUTOMATIQUE DU CARROUSEL
+let autoScrollTimer = null;
+let isAutoScrollPaused = false;
+
+function startAutoScroll() {
+  stopAutoScroll();
+  autoScrollTimer = setInterval(() => {
+    const track = document.getElementById('projectsTrack');
+    const modal = document.getElementById('projectModal');
+    // Ne pas défiler si en pause manuelle ou si une modale est ouverte
+    if (!track || isAutoScrollPaused || (modal && modal.classList.contains('open'))) return;
+
+    // Déplacement fluide équivalent à la largeur d'une carte + marge (~370px)
+    const cardStep = 370;
+    const maxScroll = track.scrollWidth - track.clientWidth;
+
+    // Si on a atteint la fin, retour fluide au début, sinon carte suivante
+    if (track.scrollLeft >= maxScroll - 25) {
+      track.scrollTo({ left: 0, behavior: 'smooth' });
+    } else {
+      track.scrollBy({ left: cardStep, behavior: 'smooth' });
+    }
+  }, 3200);
+}
+
+function stopAutoScroll() {
+  if (autoScrollTimer) {
+    clearInterval(autoScrollTimer);
+    autoScrollTimer = null;
+  }
+}
+
+function resetAutoScrollDelay() {
+  isAutoScrollPaused = true;
+  stopAutoScroll();
+  setTimeout(() => {
+    isAutoScrollPaused = false;
+    startAutoScroll();
+  }, 3500);
+}
+
 // 4. MODAL CASE STUDY CONTROLLER
 let currentProject = null;
 let currentImageIndex = 0;
@@ -349,6 +390,7 @@ function openProjectModal(projectId) {
 
   modal.classList.add('open');
   document.body.style.overflow = 'hidden';
+  isAutoScrollPaused = true;
 }
 
 function updateModalImage() {
@@ -409,6 +451,7 @@ function closeProjectModal() {
   if (window.location.hash.startsWith('#project-')) {
     history.replaceState(null, null, window.location.pathname);
   }
+  isAutoScrollPaused = false;
 }
 
 // 5. MODAL HELPERS GÉNÉRIQUES (SERVICES, PROCESS, FAQ)
@@ -453,14 +496,35 @@ function initApp() {
 
   if (prevArrow && track) {
     prevArrow.addEventListener('click', () => {
-      track.scrollBy({ left: -340, behavior: 'smooth' });
+      track.scrollBy({ left: -370, behavior: 'smooth' });
+      resetAutoScrollDelay();
     });
   }
 
   if (nextArrow && track) {
     nextArrow.addEventListener('click', () => {
-      track.scrollBy({ left: 340, behavior: 'smooth' });
+      track.scrollBy({ left: 370, behavior: 'smooth' });
+      resetAutoScrollDelay();
     });
+  }
+
+  // Lancement du défilement automatique et pause au survol / toucher
+  startAutoScroll();
+
+  const scrollWrapper = document.querySelector('.projects-scroll-wrapper');
+  if (scrollWrapper) {
+    scrollWrapper.addEventListener('mouseenter', () => {
+      isAutoScrollPaused = true;
+    });
+    scrollWrapper.addEventListener('mouseleave', () => {
+      isAutoScrollPaused = false;
+    });
+    scrollWrapper.addEventListener('touchstart', () => {
+      isAutoScrollPaused = true;
+    }, { passive: true });
+    scrollWrapper.addEventListener('touchend', () => {
+      setTimeout(() => { isAutoScrollPaused = false; }, 2500);
+    }, { passive: true });
   }
 
   // Navigation dans les avis clients

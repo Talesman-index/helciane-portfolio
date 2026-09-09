@@ -5,6 +5,80 @@
 // 1. DATA DES PROJETS & CRÉATIONS
 const PROJECTS_DATA = [
   {
+    id: 'canalbox-benin',
+    title: 'Canalbox Bénin',
+    client: 'Canalbox Bénin (Groupe Vivendi / GVA)',
+    category: 'pro',
+    categoryLabel: 'Brand & Digital',
+    year: '2024',
+    cover: 'MES PROJETS/CANALBOX PROJECTS/CANALBOX-01.png',
+    images: [
+      'MES PROJETS/CANALBOX PROJECTS/CANALBOX-01.png',
+      'MES PROJETS/CANALBOX PROJECTS/CANALBOX-02.png',
+      'MES PROJETS/CANALBOX PROJECTS/CANALBOX-03.png',
+      'MES PROJETS/CANALBOX PROJECTS/CANALBOX-04.png'
+    ],
+    role: 'Direction Artistique, Communication Digitale & Espace',
+    tags: ['Communication Digitale', '+100 Visuels', 'Inauguration', 'Photocalls', 'Design Bureaux', 'Brochures & Print'],
+    summary: 'Accompagnement 360° pour Canalbox Bénin : création de plus de 100 visuels pour les réseaux sociaux, supports imprimés, scénographie d\'inauguration et aménagement graphique des bureaux.',
+    description: `Partenaire de Canalbox (Groupe Vivendi / GVA), fournisseur d'accès internet très haut débit en Afrique de l'Ouest, j'ai réalisé un accompagnement créatif complet mêlant communication digitale et identité spatiale :
+
+• Communication Digitale & Social Media : Création de plus de 100 visuels hebdomadaires pour Instagram et Facebook, gestion éditoriale, mise en valeur des offres fibre optique et événements pour booster l'engagement en ligne. Conception de brochures de promotion et de mémos clients synthétisant les offres, tarifs et zones de couverture avec QR code direct.
+
+• Événementiel, Scénographie & Aménagement : Pour l'inauguration très médiatisée au Bénin, conception des photocalls événementiels pour les shootings photo, création de tenues spécifiques pour les hôtesses d'accueil et design des projecteurs de réception. Habillage mural et aménagement graphique des bureaux Canalbox au Bénin dans le respect de leur charte dynamique : « Taffez, Streamez, Dansez, Idéalisez ! »`
+  },
+  {
+    id: 'canal-plus',
+    title: 'Canal+ Bénin',
+    client: 'Canal+ Bénin',
+    category: 'pro',
+    categoryLabel: 'Campagnes Digitales',
+    year: '2024',
+    cover: 'MES PROJETS/CANAL+PROJECTS/CANAL+PROJECTS-01.png',
+    images: [
+      'MES PROJETS/CANAL+PROJECTS/CANAL+PROJECTS-01.png',
+      'MES PROJETS/CANAL+PROJECTS/CANAL+PROJECTS-02.png'
+    ],
+    role: 'Direction Artistique & Visuels Réseaux Sociaux',
+    tags: ['Campagnes Digitales', 'Netflix dans Canal+', 'Tabaski', 'Ligue des Champions'],
+    summary: 'Visuels promotionnels et célébrations pour Canal+ Bénin (Tabaski, Pâques, Ascension, LDC) et support démo pour l\'offre Netflix.',
+    description: `Canal+ est un groupe audiovisuel proposant films, séries, sports et documentaires via ses chaînes et plateformes. Il se distingue par ses contenus premium, son innovation et sa présence internationale. J'ai contribué à la réalisation de visuels digitaux pour les réseaux sociaux principalement Facebook de Canal+ Bénin (offres décodeur, Tabaski, Pâques, Ascension, Ligue des Champions). Lors du lancement de la nouveauté « Netflix débarque dans Canal+ », j'ai prototypé et participé à l'organisation complète de la démonstration pour valoriser l'expérience des abonnés.`
+  },
+  {
+    id: 'trellix-iconic',
+    title: 'Trellix - Iconic Love',
+    client: 'Trellix Technologies',
+    category: 'pro',
+    categoryLabel: 'Identité & Web',
+    year: '2022',
+    cover: 'MES PROJETS/DESIGN TRELLIX/DESIGN TRELLIX-01.png',
+    images: [
+      'MES PROJETS/DESIGN TRELLIX/DESIGN TRELLIX-01.png',
+      'MES PROJETS/DESIGN TRELLIX/DESIGN TRELLIX-02.png',
+      'MES PROJETS/DESIGN TRELLIX/DESIGN TRELLIX-03.png'
+    ],
+    role: 'Identité Visuelle, Packaging & Site WordPress',
+    tags: ['Produits Soin', 'WordPress', 'Packagings', 'Iconographie Beans'],
+    summary: 'Création de la marque Iconic Love (soins de la peau), conception des packagings et réalisation du site web sur WordPress.',
+    description: `Trellix est une entreprise technologique qui développe des solutions destinées à aider les organisations à former leurs jeunes talents. Chez Trellix, j'ai réalisé divers projets créatifs, dont la création de la marque Iconic Love (produits pour la peau) : identité visuelle, conception des packagings adaptés et développement du site sur WordPress. J'ai également fait de l'iconographie numérique à long terme pour Beans (+600 icônes), axée sur les programmes de fidélité et parrainage.`
+  },
+  {
+    id: 'waste-tobag',
+    title: 'Waste Tobag',
+    client: 'SGDS Bénin',
+    category: 'academic',
+    categoryLabel: 'Design Éco-citoyen',
+    year: '2023',
+    cover: 'MES PROJETS/WASTE TOBAG/ WASTE TOBAG.png',
+    images: [
+      'MES PROJETS/WASTE TOBAG/ WASTE TOBAG.png'
+    ],
+    role: 'Design d\'Usage & Illustrations Didactiques',
+    tags: ['SGDS Bénin', 'Poubelle Engageante', 'Gestion des Déchets', '+7 Illustrations'],
+    summary: 'Poubelle engageante pour sensibiliser les populations à la gestion des déchets plastiques, avec +7 illustrations de mise en scène.',
+    description: `Projet réalisé avec la SGDS (Société de Gestion des Déchets et de la Salubrité Bénin). Waste Tobag a été conçu pour accompagner la population à la gestion des déchets plastiques après utilisation dans les espaces communautaires. Réalisation du dispositif de poubelle engageante et de plus de 7 illustrations de mise en scène didactiques créées par mes soins (Day 1, Week 1, Later...).`
+  },
+  {
     id: 'peace-page',
     title: 'Peace Page',
     client: 'Projet de Fin d\'Études Bachelor',
@@ -65,46 +139,6 @@ const PROJECTS_DATA = [
     description: `Création d'un ensemble de supports graphiques et de cartes de jeu pour un atelier de Design Thinking. Ce workshop permet aux équipes créatives d'identifier les racines des problèmes de communication et de concevoir des solutions innovantes de façon collaborative.`
   },
   {
-    id: 'canalbox-benin',
-    title: 'Canalbox Bénin',
-    client: 'Canalbox Bénin (Groupe Vivendi / GVA)',
-    category: 'pro',
-    categoryLabel: 'Brand & Digital',
-    year: '2024',
-    cover: 'MES PROJETS/CANALBOX PROJECTS/CANALBOX-01.png',
-    images: [
-      'MES PROJETS/CANALBOX PROJECTS/CANALBOX-01.png',
-      'MES PROJETS/CANALBOX PROJECTS/CANALBOX-02.png',
-      'MES PROJETS/CANALBOX PROJECTS/CANALBOX-03.png',
-      'MES PROJETS/CANALBOX PROJECTS/CANALBOX-04.png'
-    ],
-    role: 'Direction Artistique, Communication Digitale & Espace',
-    tags: ['Communication Digitale', '+100 Visuels', 'Inauguration', 'Photocalls', 'Design Bureaux', 'Brochures & Print'],
-    summary: 'Accompagnement 360° pour Canalbox Bénin : création de plus de 100 visuels pour les réseaux sociaux, supports imprimés, scénographie d\'inauguration et aménagement graphique des bureaux.',
-    description: `Partenaire de Canalbox (Groupe Vivendi / GVA), fournisseur d'accès internet très haut débit en Afrique de l'Ouest, j'ai réalisé un accompagnement créatif complet mêlant communication digitale et identité spatiale :
-
-• Communication Digitale & Social Media : Création de plus de 100 visuels hebdomadaires pour Instagram et Facebook, gestion éditoriale, mise en valeur des offres fibre optique et événements pour booster l'engagement en ligne. Conception de brochures de promotion et de mémos clients synthétisant les offres, tarifs et zones de couverture avec QR code direct.
-
-• Événementiel, Scénographie & Aménagement : Pour l'inauguration très médiatisée au Bénin, conception des photocalls événementiels pour les shootings photo, création de tenues spécifiques pour les hôtesses d'accueil et design des projecteurs de réception. Habillage mural et aménagement graphique des bureaux Canalbox au Bénin dans le respect de leur charte dynamique : « Taffez, Streamez, Dansez, Idéalisez ! »`
-  },
-  {
-    id: 'canal-plus',
-    title: 'Canal+ Bénin',
-    client: 'Canal+ Bénin',
-    category: 'pro',
-    categoryLabel: 'Campagnes Digitales',
-    year: '2024',
-    cover: 'MES PROJETS/CANAL+PROJECTS/CANAL+PROJECTS-01.png',
-    images: [
-      'MES PROJETS/CANAL+PROJECTS/CANAL+PROJECTS-01.png',
-      'MES PROJETS/CANAL+PROJECTS/CANAL+PROJECTS-02.png'
-    ],
-    role: 'Direction Artistique & Visuels Réseaux Sociaux',
-    tags: ['Campagnes Digitales', 'Netflix dans Canal+', 'Tabaski', 'Ligue des Champions'],
-    summary: 'Visuels promotionnels et célébrations pour Canal+ Bénin (Tabaski, Pâques, Ascension, LDC) et support démo pour l\'offre Netflix.',
-    description: `Canal+ est un groupe audiovisuel proposant films, séries, sports et documentaires via ses chaînes et plateformes. Il se distingue par ses contenus premium, son innovation et sa présence internationale. J'ai contribué à la réalisation de visuels digitaux pour les réseaux sociaux principalement Facebook de Canal+ Bénin (offres décodeur, Tabaski, Pâques, Ascension, Ligue des Champions). Lors du lancement de la nouveauté « Netflix débarque dans Canal+ », j'ai prototypé et participé à l'organisation complète de la démonstration pour valoriser l'expérience des abonnés.`
-  },
-  {
     id: 'coffee-loffee',
     title: 'Coffee Loffee',
     client: 'Projet Personnel / Concept Brand',
@@ -152,40 +186,6 @@ const PROJECTS_DATA = [
     tags: ['Salad Bar', 'Packaging Éco-conçu', 'Mythologie', 'Food Branding'],
     summary: 'Branding inspiré de la déesse des moissons : symbole de fraîcheur, d\'abondance et de vitalité pour des bols de salades saines.',
     description: `Dans la mythologie, Déméter est la déesse des moissons, symbole de fraîcheur, d'abondance et de vitalité. C'est cette énergie qui a inspiré Demeter's Bowl : un branding fictif pensé comme une offrande moderne à la nature, mais aussi comme un reflet personnel. Conception d'identités graphiques fraîches, contenants alimentaires durables pour salades à composer et univers visuel en point de vente (« Refresh your mind »).`
-  },
-  {
-    id: 'trellix-iconic',
-    title: 'Trellix - Iconic Love',
-    client: 'Trellix Technologies',
-    category: 'pro',
-    categoryLabel: 'Identité & Web',
-    year: '2022',
-    cover: 'MES PROJETS/DESIGN TRELLIX/DESIGN TRELLIX-01.png',
-    images: [
-      'MES PROJETS/DESIGN TRELLIX/DESIGN TRELLIX-01.png',
-      'MES PROJETS/DESIGN TRELLIX/DESIGN TRELLIX-02.png',
-      'MES PROJETS/DESIGN TRELLIX/DESIGN TRELLIX-03.png'
-    ],
-    role: 'Identité Visuelle, Packaging & Site WordPress',
-    tags: ['Produits Soin', 'WordPress', 'Packagings', 'Iconographie Beans'],
-    summary: 'Création de la marque Iconic Love (soins de la peau), conception des packagings et réalisation du site web sur WordPress.',
-    description: `Trellix est une entreprise technologique qui développe des solutions destinées à aider les organisations à former leurs jeunes talents. Chez Trellix, j'ai réalisé divers projets créatifs, dont la création de la marque Iconic Love (produits pour la peau) : identité visuelle, conception des packagings adaptés et développement du site sur WordPress. J'ai également fait de l'iconographie numérique à long terme pour Beans (+600 icônes), axée sur les programmes de fidélité et parrainage.`
-  },
-  {
-    id: 'waste-tobag',
-    title: 'Waste Tobag',
-    client: 'SGDS Bénin',
-    category: 'academic',
-    categoryLabel: 'Design Éco-citoyen',
-    year: '2023',
-    cover: 'MES PROJETS/WASTE TOBAG/ WASTE TOBAG.png',
-    images: [
-      'MES PROJETS/WASTE TOBAG/ WASTE TOBAG.png'
-    ],
-    role: 'Design d\'Usage & Illustrations Didactiques',
-    tags: ['SGDS Bénin', 'Poubelle Engageante', 'Gestion des Déchets', '+7 Illustrations'],
-    summary: 'Poubelle engageante pour sensibiliser les populations à la gestion des déchets plastiques, avec +7 illustrations de mise en scène.',
-    description: `Projet réalisé avec la SGDS (Société de Gestion des Déchets et de la Salubrité Bénin). Waste Tobag a été conçu pour accompagner la population à la gestion des déchets plastiques après utilisation dans les espaces communautaires. Réalisation du dispositif de poubelle engageante et de plus de 7 illustrations de mise en scène didactiques créées par mes soins (Day 1, Week 1, Later...).`
   },
   {
     id: 'home-hotel',

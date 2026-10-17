@@ -1,391 +1,305 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Helciane Hougbadji | Directrice Artistique & Graphic Designer — Portfolio Bento</title>
-  
-  <meta name="description" content="Portfolio Bento officiel d'Helciane Hougbadji. Directrice Artistique, Graphic Designer et Illustratrice. Branding, Packaging, Communication Digitale et Design Visuel.">
-  <meta name="author" content="Helciane Hougbadji">
-
-  <!-- Meta anti-cache pour le développement -->
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
-
-  <!-- Favicon -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎨</text></svg>">
-
-  <!-- Stylesheet avec cache-buster -->
-  <link rel="stylesheet" href="style.css?v=20260908_13">
-
-  <!-- Google Fonts: Poppins (Loaded asynchronously without blocking script execution) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <script>
-    (function() {
-      const link = document.createElement('link');
-      link.rel = 'stylesheet';
-      link.href = 'https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&display=swap';
-      document.head.appendChild(link);
-    })();
-  </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Helciane Hougbadji · Directrice Artistique & Graphic Designer</title>
+<meta name="description" content="Portfolio d'Helciane Hougbadji, Directrice Artistique, Graphic Designer et Illustratrice. Branding, packaging, communication digitale et design visuel.">
+<script>(function(h){h.classList.add('js','boot');try{var s=sessionStorage,v=s.getItem('cc-vt');if(!s.getItem('cc-visited'))h.classList.add('first');else if(v){h.classList.add('vt');h.style.setProperty('--vt-img','url("'+v+'")')}}catch(e){}setTimeout(function(){h.classList.add('loaded');h.classList.remove('boot','vt')},6000)})(document.documentElement);</script>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300..800&family=Instrument+Serif:ital@0;1&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css?v=20261017">
 </head>
-<body>
+<body data-theme="marine">
+<div class="page-wipe" aria-hidden="true"></div>
+<div class="progress" aria-hidden="true"></div>
+<div class="cursor" aria-hidden="true"><span>Voir</span></div>
+<nav class="nav" aria-label="Navigation principale">
+  <a class="brand" href="index.html">Accueil</a>
+  <ul>
+    <li><a href="index.html#apropos">À propos</a></li>
+    <li><a href="index.html#parcours">Parcours &amp; Formation</a></li>
+    <li><a href="index.html#realisations">Réalisations</a></li>
+    <li><a href="passions.html">Passions</a></li>
+  </ul>
+  <a class="cta" href="index.html#contact">Contact</a>
+</nav>
 
-  <main class="bento-canvas">
+<main>
+  <!-- ACCUEIL : on zoome à travers le nom au scroll, une bulle liquide suit la souris et révèle une version inversée -->
+  <section class="intro" data-theme="marine">
+    <div class="intro-sticky">
+      <div class="scene">
+        <div class="halo" aria-hidden="true"></div>
+        <div class="scene-text">
+          <p class="hello">Hello ! Moi c'est</p>
+          <h1>Helciane Hougbadji</h1>
+          <p class="lead">Directrice Artistique & Graphic Designer</p>
+        </div>
+        <div class="portrait-wrap">
+          <figure class="portrait"><img src="images/accueil/photo-helciane.jpg" alt="Portrait de Helciane Hougbadji"></figure>
+        </div>
+      </div>
+      <!-- Écran d'entrée : on zoome à travers les lettres du nom pour découvrir la page -->
+      <div class="intro-cover" aria-hidden="true">
+        <svg class="cover-svg" xmlns="http://www.w3.org/2000/svg">
+          <defs><mask id="nameMask" maskUnits="userSpaceOnUse"><rect class="cover-rect" fill="#fff"/><g class="zoom"><text class="cover-text" fill="#000" text-anchor="middle">Helciane Hougbadji</text></g></mask></defs>
+          <rect class="cover-rect" fill="#0F1A4A" mask="url(#nameMask)"/>
+        </svg>
+        <span class="cover-kicker">Le portfolio de</span>
+        <div class="intro-hint"><i></i>Faites défiler pour entrer</div>
+      </div>
+      <div class="cover-reveal reveal-layer" aria-hidden="true">
+        <div class="fluid"></div>
+        <svg class="cover-svg" xmlns="http://www.w3.org/2000/svg"><g class="zoom"><text class="cover-text" fill="#F3F3FD" text-anchor="middle">Helciane Hougbadji</text></g></svg>
+        <span class="cover-kicker">Le portfolio de</span>
+      </div>
+    </div>
+  </section>
 
-    <!-- ====================================================================
-         ROW 1: TOP HERO ROW
-         ==================================================================== -->
-    <section class="bento-row-hero" aria-label="Présentation et compétences">
+  <!-- QUI JE SUIS -->
+  <section class="wrap about" id="apropos" data-theme="brume">
+    <div class="about-grid">
+      <div class="about-main">
+        <h2 class="t-title" data-reveal>Qui <em>suis-je</em></h2>
+        <p class="about-text" data-words>Directrice Artistique, Designer Graphique et Illustratrice, diplômée d'un Master en Design Strategy (l'École de Design de Nantes Atlantique / Africa Design School). J'accompagne les marques, entreprises et créateurs dans la conception d'identités visuelles mémorables, d'univers graphiques percutants et d'expériences intuitives.</p>
+        <div class="facts">
+          <!-- 1. Canalbox -->
+          <div class="fact" data-reveal>
+            <div class="logo">
+              <img class="logo-color" src="images/logos/logo-canalbox-couleur.png" alt="Logo CANALBOX">
+              <img class="logo-white" src="images/logos/logo-canalbox.png" alt="Logo CANALBOX">
+            </div>
+            <p>Accompagnement 360° communication digitale et aménagement événementiel.</p>
+          </div>
+          <!-- 2. Canal+ -->
+          <div class="fact" data-reveal style="--d:.1s">
+            <div class="logo">
+              <img class="logo-color" src="images/logos/logo-canalplus-couleur.png" alt="Logo CANAL+">
+              <img class="logo-white" src="images/logos/logo-canalplus.png" alt="Logo CANAL+">
+            </div>
+            <p>Campagnes digitales réseaux sociaux et temps forts annuels.</p>
+          </div>
+          <!-- 3. Trellix -->
+          <div class="fact" data-reveal style="--d:.2s">
+            <div class="logo">
+              <img class="logo-color" src="images/logos/logo-trellix-couleur.svg" alt="Logo Trellix">
+              <img class="logo-white" src="images/logos/logo-trellix.svg" alt="Logo Trellix">
+            </div>
+            <p>Identité de marque globale, gammes packagings et iconographie.</p>
+          </div>
+          <!-- 4. Home Residence Hotel -->
+          <div class="fact" data-reveal style="--d:.3s">
+            <div class="logo">
+              <img class="logo-color" src="images/logos/logo-home-couleur.png" alt="Logo HOME Residence Hotel">
+              <img class="logo-white" src="images/logos/logo-home.png" alt="Logo HOME Residence Hotel">
+            </div>
+            <p>Direction artistique des événements de prestige &amp; social media.</p>
+          </div>
+        </div>
+      </div>
+      <!-- Photo détourée / encadrée avec badge circulaire tournant -->
+      <figure class="about-photo" data-reveal style="--d:.15s">
+        <span class="about-arch" aria-hidden="true"></span>
+        <img src="images/accueil/photo-helciane.jpg" alt="Portrait de Helciane Hougbadji" width="762" height="1000" loading="lazy" style="border-radius: min(45vw, 16rem) min(45vw, 16rem) 32px 32px; object-fit: cover; aspect-ratio: 4/5;">
+        <span class="about-badge" aria-hidden="true"><svg viewBox="0 0 120 120"><defs><path id="about-circle" d="M60,60 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0"></path></defs><text><textPath href="#about-circle">Direction Artistique ✦ Branding ✦ Graphisme ✦ </textPath></text></svg><i>✦</i></span>
+      </figure>
+    </div>
+  </section>
+
+  <!-- PARCOURS & ÉDUCATION : la frise se remplit au scroll -->
+  <section class="wrap" id="parcours" data-theme="marine">
+    <div data-reveal>
+      <h2 class="t-title">Parcours &amp; <em>éducation</em></h2>
+      <p class="lead" style="margin-top:1.2rem;color:var(--muted)">Diplômée d'un Master en Design Strategy à l'École de Design de Nantes Atlantique (Africa Design School).</p>
+    </div>
+
+    <!-- Deux cartes de diplômes mises en valeur avec display haut de gamme et contraste parfait -->
+    <div class="education-cards" data-reveal style="--d:.1s">
+      <div class="edu-card">
+        <div class="edu-card-head">
+          <div class="edu-badge" title="Africa Design School by L'École de Design de Nantes Atlantique">
+            <img src="images/logos/ads-black.png" alt="Logo Africa Design School" width="90" height="72" loading="lazy">
+          </div>
+          <span class="edu-year-pill">2024 — 2026</span>
+        </div>
+        <div class="edu-body">
+          <h3>Master en Design Strategy</h3>
+          <p class="edu-inst">L'École de Design de Nantes Atlantique <span>✦</span> Africa Design School</p>
+          <p class="edu-desc">Soutenu avec succès en 2026. Innovation stratégique, prospective, design thinking et direction artistique globale de marque.</p>
+        </div>
+      </div>
+      <div class="edu-card">
+        <div class="edu-card-head">
+          <div class="edu-badge" title="Africa Design School by L'École de Design de Nantes Atlantique">
+            <img src="images/logos/ads-black.png" alt="Logo Africa Design School" width="90" height="72" loading="lazy">
+          </div>
+          <span class="edu-year-pill">2021 — 2024</span>
+        </div>
+        <div class="edu-body">
+          <h3>Licence en Design</h3>
+          <p class="edu-inst">L'École de Design de Nantes Atlantique <span>✦</span> Africa Design School</p>
+          <p class="edu-desc">Cursus débuté en 2021. Fondations solides : identité de marque, typographie, design d'usage citoyen et packaging éco-conçu.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Frise chronologique détaillée -->
+    <div class="timeline">
+      <div class="timeline-line"></div><div class="timeline-fill"></div>
       
-      <!-- 1. Portrait Card -->
-      <div class="bento-box card-portrait">
-        <img src="assets/helciane-portrait.jpg" alt="Portrait Helciane Hougbadji" />
+      <div class="step"><p class="when">2026</p><h3>Soutenance de Master en Design Strategy</h3>
+        <div class="school-tag">
+          <span class="school-logo-pill"><img src="images/logos/ads-black.png" alt="Africa Design School"></span>
+          <span>Africa Design School by L'École de Design de Nantes Atlantique</span>
+        </div>
+        <p>Soutenance et obtention du diplôme de Master en Design Strategy. Spécialisation en innovation stratégique, design thinking, prospective et direction de projets complexes.</p>
       </div>
 
-      <!-- 2. Socials & Bio Column -->
-      <div class="col-bio-stack">
-        <!-- Socials Bar (Horizontal LinkedIn & Instagram) -->
-        <div class="social-links-bar" aria-label="Réseaux sociaux professionnels">
-          <a href="https://www.linkedin.com/in/helciane-houngbadji-a723361bb" target="_blank" rel="noopener" class="social-brand-btn linkedin-btn" title="LinkedIn - Helciane Hougbadji">
-            <svg class="brand-logo-svg" width="18" height="18" viewBox="0 0 24 24" fill="#0A66C2">
-              <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.45a1.64 1.64 0 1 0 0 3.28 1.64 1.64 0 0 0 0-3.28z"/>
-            </svg>
-            <span class="social-brand-name">LinkedIn</span>
-          </a>
-          <a href="https://www.instagram.com/heltza_design/" target="_blank" rel="noopener" class="social-brand-btn instagram-btn" title="Instagram - @heltza_design">
-            <svg class="brand-logo-svg" width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <defs>
-                <radialGradient id="ig-grad" cx="30%" cy="107%" r="150%">
-                  <stop offset="0%" stop-color="#fdf497"/>
-                  <stop offset="5%" stop-color="#fdf497"/>
-                  <stop offset="45%" stop-color="#fd5949"/>
-                  <stop offset="60%" stop-color="#d6249f"/>
-                  <stop offset="90%" stop-color="#285AEB"/>
-                </radialGradient>
-              </defs>
-              <rect x="2" y="2" width="20" height="20" rx="5" ry="5" stroke="url(#ig-grad)" stroke-width="2"/>
-              <circle cx="12" cy="12" r="4" stroke="url(#ig-grad)" stroke-width="2"/>
-              <circle cx="17.5" cy="6.5" r="1.2" fill="url(#ig-grad)"/>
-            </svg>
-            <span class="social-brand-name">Instagram</span>
-          </a>
-        </div>
-
-        <!-- Bio Card (Menthe Pastel) -->
-        <div class="bento-box card-bio-content">
-          <div>
-            <h1 class="bio-heading">Bonjour, je suis Helciane.</h1>
-            <p class="bio-text">
-              Directrice Artistique, Designer Graphique, Illustratrice &amp; UI Designer. J'accompagne les marques, entreprises et créateurs dans la conception d'identités visuelles mémorables, d'univers graphiques percutants et d'interfaces intuitives.
-            </p>
-          </div>
-
-          <div class="bio-worked-with">
-            <span class="worked-with-label">Travaillé avec</span>
-            <div class="client-logos-row">
-              <span class="client-logo-item">CANALBOX</span>
-              <span class="client-logo-item">CANAL+</span>
-              <span class="client-logo-item">HOME RESIDENCE</span>
-              <span class="client-logo-item">TRELLIX</span>
-              <span class="client-logo-item">SGDS</span>
-            </div>
-          </div>
-        </div>
+      <div class="step"><p class="when">Depuis 2024</p><h3>Direction Artistique Freelance &amp; Partenariats Grandes Marques</h3>
+        <p>Canalbox Bénin, Canal+ Bénin, HOME Residence Hotel :</p>
+        <ul>
+          <li>Création de plus de 100 visuels pour les réseaux sociaux (Facebook, Instagram) et supports imprimés institutionnels.</li>
+          <li>Scénographie événementielle : conception de photocalls grand format pour la presse, création des tenues pour hôtesses d'accueil.</li>
+          <li>Aménagement graphique mural des bureaux et espaces d'accueil : « Taffez, Streamez, Dansez, Idéalisez ! ».</li>
+          <li>Direction artistique événementielle pour les temps forts de prestige (Live de Noël Rooftop, Sparkles Night).</li>
+        </ul>
       </div>
 
-      <!-- 3. Stats Vertical Pills Stack (Horizontal Rounded Capsules) -->
-      <div class="stats-pills-stack" aria-label="Statistiques professionnelles">
-        <!-- Stat 1 -->
-        <div class="stat-pill-item">
-          <div class="stat-pill-icon">
-            <img src="assets/icons/stat-14-satisfaction.png" alt="Icône Satisfaction" />
-          </div>
-          <div class="stat-pill-val">98%</div>
-          <div class="stat-pill-lbl">Satisfaction<br />Clients</div>
-        </div>
-
-        <!-- Stat 2 -->
-        <div class="stat-pill-item">
-          <div class="stat-pill-icon">
-            <img src="assets/icons/stat-15-projects.png" alt="Icône Projets" />
-          </div>
-          <div class="stat-pill-val">100+</div>
-          <div class="stat-pill-lbl">Projets<br />Réalisés</div>
-        </div>
-
-        <!-- Stat 3 -->
-        <div class="stat-pill-item">
-          <div class="stat-pill-icon">
-            <img src="assets/icons/stat-16-experience.png" alt="Icône Expérience" />
-          </div>
-          <div class="stat-pill-val">5+</div>
-          <div class="stat-pill-lbl">Années<br />d'Expérience</div>
-        </div>
-
-        <!-- Stat 4 -->
-        <div class="stat-pill-item">
-          <div class="stat-pill-icon">
-            <img src="assets/icons/stat-17-response.png" alt="Icône Réactivité" />
-          </div>
-          <div class="stat-pill-val">24h</div>
-          <div class="stat-pill-lbl">Délai de<br />Réponse</div>
-        </div>
+      <div class="step"><p class="when">2023 à 2024</p><h3>Lead Design &amp; Branding — Trellix Technologies</h3>
+        <ul>
+          <li><strong>Création de marque globale :</strong> conception intégrale de la marque de cosmétiques Iconic Love (identité visuelle, packaging épuré et site web sous WordPress).</li>
+          <li><strong>Iconographie numérique &amp; UI :</strong> réalisation de plus de 600 pictogrammes et icônes sur mesure pour la plateforme Beans.</li>
+        </ul>
       </div>
 
-      <!-- 4. Work Process Card -->
-      <div class="bento-box card-work-process bento-clickable" id="btnOpenProcess" title="Découvrir le processus de travail">
-        <img class="card-illustration-full" src="PREMIERS%20DESSINS%20ET%20AUTRES/POUR%20LES%20VECTEURS%20D'IMAGES%20QU'ON%20VOIT%20AUTOMATIQUEMENT/Visuals%20titles_portfolio_HH-02.png" alt="Work Process" />
-      </div>
-
-      <!-- 5. Services Card -->
-      <div class="bento-box card-services bento-clickable" id="btnOpenServices" title="Découvrir les expertises et services">
-        <img class="card-illustration-full" src="PREMIERS%20DESSINS%20ET%20AUTRES/POUR%20LES%20VECTEURS%20D'IMAGES%20QU'ON%20VOIT%20AUTOMATIQUEMENT/Visuals%20titles_portfolio_HH-01.png" alt="Services" />
-      </div>
-
-    </section>
-
-    <!-- ====================================================================
-         ROW 2: PROJECTS ROW (TITLE CARD + HORIZONTAL SCROLL)
-         ==================================================================== -->
-    <section class="bento-row-projects" aria-label="Projets récents">
-      
-      <!-- Left Projects Illustration Card -->
-      <div class="bento-box card-projects-title bento-clickable" id="btnScrollProjects" title="Découvrir tous les projets">
-        <img class="card-illustration-full" src="PREMIERS%20DESSINS%20ET%20AUTRES/POUR%20LES%20VECTEURS%20D'IMAGES%20QU'ON%20VOIT%20AUTOMATIQUEMENT/Visuals_titles_portfolio_HH.png" alt="Projects" />
-      </div>
-
-      <!-- Horizontal Projects Carousel -->
-      <div class="projects-scroll-wrapper">
-        <button class="carousel-arrow prev" id="carouselPrevBtn" aria-label="Projets précédents">‹</button>
-        <div class="projects-track" id="projectsTrack">
-          <!-- Injected by app.js -->
+      <div class="step"><p class="when">2021 à 2024</p><h3>Licence en Design — Africa Design School</h3>
+        <div class="school-tag">
+          <span class="school-logo-pill"><img src="images/logos/ads-black.png" alt="Africa Design School"></span>
+          <span>L'École de Design de Nantes Atlantique</span>
         </div>
-        <button class="carousel-arrow next" id="carouselNextBtn" aria-label="Projets suivants">›</button>
-      </div>
-
-    </section>
-
-    <!-- ====================================================================
-         ROW 3: REVIEWS, FAQ, INSIGHTS & AVAILABLE
-         ==================================================================== -->
-    <section class="bento-row-bottom" aria-label="Avis clients, FAQ et contact">
-      
-      <!-- 1. Reviews Card -->
-      <div class="bento-box card-reviews">
-        <div class="reviews-avatar-grid">
-          <div class="avatar-grid-cell"></div>
-          <div class="avatar-grid-cell"></div>
-          <div class="avatar-grid-cell"></div>
-          <div class="avatar-grid-cell"></div>
-          <div class="avatar-grid-cell active-avatar"></div>
-          <div class="avatar-grid-cell"></div>
-          <div class="avatar-grid-cell"></div>
-          <div class="avatar-grid-cell"></div>
-          <div class="avatar-grid-cell"></div>
-        </div>
-        <div class="reviews-content-wrap">
-          <div class="review-quote-mark">“</div>
-          <p class="review-quote-text" id="reviewQuoteText">
-            Notre collaboration a été fluide et efficace du début à la fin. Chaque détail était pensé avec soin, et les résultats ont largement dépassé nos attentes.
-          </p>
-          <div class="review-author-meta">
-            <div>
-              <span class="author-name" id="reviewAuthorName">Direction Marketing</span>
-              <span class="author-role" id="reviewAuthorRole">CANALBOX BÉNIN • 2024</span>
-            </div>
-            <div class="review-nav-arrows">
-              <button class="review-arrow-btn" id="reviewPrevBtn" aria-label="Avis précédent">←</button>
-              <button class="review-arrow-btn" id="reviewNextBtn" aria-label="Avis suivant">→</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 2. FAQ Card -->
-      <div class="bento-box card-faq bento-clickable" id="btnOpenFAQ" title="Consulter la Foire Aux Questions">
-        <img class="card-illustration-full" src="PREMIERS%20DESSINS%20ET%20AUTRES/POUR%20LES%20VECTEURS%20D'IMAGES%20QU'ON%20VOIT%20AUTOMATIQUEMENT/Visuals%20titles_portfolio_HH-03.png" alt="FAQ'S" />
-      </div>
-
-      <!-- 3. Inspirations & Illustrations Card -->
-      <div class="bento-box card-insights bento-clickable" id="btnOpenInsights" title="Voir les illustrations & inspirations">
-        <img class="card-illustration-full" src="PREMIERS%20DESSINS%20ET%20AUTRES/POUR%20LES%20VECTEURS%20D'IMAGES%20QU'ON%20VOIT%20AUTOMATIQUEMENT/Visuals%20titles_portfolio_HH-04.png" alt="Illustrations & Inspirations" />
-      </div>
-
-      <!-- 4. Available for Freelance Card -->
-      <div class="bento-box card-available">
-        <div class="available-text-col">
-          <div class="available-status-badge">
-            <span class="available-dot"></span>
-            <span>DISPONIBLE</span>
-          </div>
-          <h2 class="available-headline">
-            Actuellement disponible pour de nouveaux projets freelance
-          </h2>
-          <a href="mailto:houngbadjihelciane@gmail.com" class="btn-letstalk">
-            <span>ME CONTACTER</span>
-            <span>↗</span>
-          </a>
-        </div>
-        <div class="available-illustration-wrap">
-          <img src="PREMIERS%20DESSINS%20ET%20AUTRES/Partie%20Available_portfolio_HH.png" alt="Illustration Disponible" />
-        </div>
-      </div>
-
-    </section>
-
-    <!-- Bottom Credit Pill -->
-    <div class="bottom-credit-pill">
-      Fait avec passion pour Helciane Hougbadji • 2026
-    </div>
-
-  </main>
-
-  <!-- ====================================================================
-       MODALS: CASE STUDY, SERVICES, PROCESS, FAQ
-       ==================================================================== -->
-
-  <!-- Project Case Study Lightbox -->
-  <div class="modal-backdrop" id="projectModal" role="dialog" aria-modal="true">
-    <div class="modal-container">
-      <div class="modal-header">
-        <span class="project-tag" id="modalCategory">Catégorie</span>
-        <button class="modal-close-btn" id="modalCloseBtn" aria-label="Fermer">✕</button>
-      </div>
-      <div class="modal-body">
-        <div class="modal-gallery-wrap">
-          <button class="gallery-nav-btn gallery-prev" id="galleryPrevBtn" aria-label="Précédent">‹</button>
-          <img class="modal-active-img" id="modalActiveImage" src="" alt="Vue projet" />
-          <button class="gallery-nav-btn gallery-next" id="galleryNextBtn" aria-label="Suivant">›</button>
-        </div>
-        <div class="gallery-thumbnails" id="modalThumbnails"></div>
-        <div class="modal-details-grid">
-          <div>
-            <h2 class="modal-title" id="modalTitle">Titre du Projet</h2>
-            <p class="modal-desc" id="modalDescription">Description...</p>
-          </div>
-          <div class="modal-side-meta">
-            <div class="meta-item">
-              <strong>Client / Contexte</strong>
-              <span id="modalClient">-</span>
-            </div>
-            <div class="meta-item">
-              <strong>Année</strong>
-              <span id="modalYear">-</span>
-            </div>
-            <div class="meta-item">
-              <strong>Missions</strong>
-              <span id="modalRole">-</span>
-            </div>
-            <div class="meta-item">
-              <strong>Tags</strong>
-              <div class="project-tags" id="modalTags"></div>
-            </div>
-          </div>
-        </div>
+        <p>Cycle de 3 ans débuté en 2021. Fondations solides en direction artistique, identité de marque, typographie, packaging et design d'usage.</p>
+        <ul>
+          <li><strong>Projet de fin d'études :</strong> Peace Page (notebook d'accompagnement psychologique pour la jeunesse en Afrique).</li>
+          <li><strong>Design d'usage &amp; citoyenneté :</strong> Waste Tobag en partenariat avec la SGDS Bénin (sensibilisation au tri des déchets).</li>
+        </ul>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- Services Modal -->
-  <div class="modal-backdrop" id="servicesModal" role="dialog" aria-modal="true">
-    <div class="modal-container">
-      <div class="modal-header">
-        <h2 style="font-size: 1.4rem; font-weight: 800;">Services &amp; Expertises</h2>
-        <button class="modal-close-btn" onclick="closeModal('servicesModal')">✕</button>
+  <!-- RÉALISATIONS : défilement horizontal -->
+  <section class="hscroll" id="realisations" data-theme="pervenche">
+    <div class="hscroll-sticky">
+      <div class="hscroll-head">
+        <h2 class="t-title">Mes <em>réalisations</em></h2>
+        <p class="counter" aria-live="polite"><span data-count>1</span> sur <span data-total>9</span></p>
       </div>
-      <div class="modal-body">
-        <div class="drawer-grid-4">
-          <div class="drawer-card-item">
-            <img src="PREMIERS%20DESSINS%20ET%20AUTRES/PARTIE%20SERVICES/Services_Illustrat_portfolio_HH-06.png" alt="Branding" />
-            <h3>01. Branding &amp; Identité Visuelle</h3>
-            <p>Création de logotypes, chartes graphiques, typographies et univers de marque durables.</p>
+      <div class="track">
+        <a class="card" href="branding.html#projet-1">
+          <div class="media">
+            <span class="card-pill">Nouveau ✦ 2025</span>
+            <img src="images/realisations/solar-stark-couverture.png" alt="Solar Stark Club - Tennis &amp; Lifestyle" loading="lazy">
           </div>
-          <div class="drawer-card-item">
-            <img src="PREMIERS%20DESSINS%20ET%20AUTRES/PARTIE%20SERVICES/Services_Illustrat_portfolio_HH-07.png" alt="Packaging" />
-            <h3>02. Packaging &amp; Print</h3>
-            <p>Conception de packagings éco-conçus, étiquettes, brochures commerciales et photocalls.</p>
+          <div class="meta"><h3>Solar Stark Club</h3><p>Branding &amp; Tennis Lifestyle</p></div>
+        </a>
+        <a class="card" href="packagings.html#projet-1">
+          <div class="media">
+            <span class="card-pill">Nouveau ✦ 2025</span>
+            <img src="images/realisations/sorberro-couverture.png" alt="Sorberro - Glaces Artisanales &amp; Food Truck" loading="lazy">
           </div>
-          <div class="drawer-card-item">
-            <img src="PREMIERS%20DESSINS%20ET%20AUTRES/PARTIE%20SERVICES/Services_Illustrat_portfolio_HH-05.png" alt="Digital" />
-            <h3>03. Communication Digitale</h3>
-            <p>Création de visuels percutants pour réseaux sociaux, feeds Instagram et bannières promotionnelles.</p>
+          <div class="meta"><h3>Sorberro</h3><p>Packagings &amp; Food Truck</p></div>
+        </a>
+        <a class="card" href="packagings.html#projet-2">
+          <div class="media">
+            <span class="card-pill">✦ En vedette</span>
+            <img src="images/realisations/demeter-bowl-couverture.png" alt="Demeter's Bowl - Salades &amp; Packagings" loading="lazy">
           </div>
-          <div class="drawer-card-item">
-            <img src="PREMIERS%20DESSINS%20ET%20AUTRES/PARTIE%20SERVICES/Services_Illustrat_portfolio_HH-08.png" alt="UI Motion" />
-            <h3>04. UI Design &amp; Motion</h3>
-            <p>Maquettage d'interfaces web sous Figma, intégration WordPress et micro-animations fluides.</p>
-          </div>
-        </div>
+          <div class="meta"><h3>Demeter's Bowl</h3><p>Branding &amp; Packagings Salade</p></div>
+        </a>
+        <a class="card" href="branding.html">
+          <div class="media"><img src="images/realisations/branding-couverture.png" alt="Branding" loading="lazy"></div>
+          <div class="meta"><h3>Branding</h3><p>Identités &amp; Univers de marque</p></div>
+        </a>
+        <a class="card" href="campagnes.html">
+          <div class="media"><img src="images/realisations/campagnes-couverture.png" alt="Campagnes Digitales" loading="lazy"></div>
+          <div class="meta"><h3>Campagnes Digitales</h3><p>Social Media &amp; Visuels 360°</p></div>
+        </a>
+        <a class="card" href="direction-artistique.html">
+          <div class="media"><img src="images/realisations/direction-artistique-couverture.png" alt="Direction Artistique" loading="lazy"></div>
+          <div class="meta"><h3>Direction Artistique</h3><p>Événementiel &amp; Scénographie</p></div>
+        </a>
+        <a class="card" href="packagings.html">
+          <div class="media"><img src="images/realisations/packagings-couverture.png" alt="Packagings" loading="lazy"></div>
+          <div class="meta"><h3>Packagings</h3><p>Design produit &amp; Édition</p></div>
+        </a>
+        <a class="card" href="design-social.html">
+          <div class="media"><img src="images/realisations/design-social-couverture.png" alt="Design Social" loading="lazy"></div>
+          <div class="meta"><h3>Design Social</h3><p>Impact &amp; Éco-citoyenneté</p></div>
+        </a>
+        <a class="card" href="signaletique.html">
+          <div class="media"><img src="images/realisations/signaletique-couverture.png" alt="Signalétique" loading="lazy"></div>
+          <div class="meta"><h3>Signalétique</h3><p>Design d'espace &amp; Pictos</p></div>
+        </a>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- Work Process Modal -->
-  <div class="modal-backdrop" id="processModal" role="dialog" aria-modal="true">
-    <div class="modal-container">
-      <div class="modal-header">
-        <h2 style="font-size: 1.4rem; font-weight: 800;">Work Process — Méthodologie</h2>
-        <button class="modal-close-btn" onclick="closeModal('processModal')">✕</button>
-      </div>
-      <div class="modal-body">
-        <div class="drawer-grid-4">
-          <div class="drawer-card-item">
-            <img src="PREMIERS%20DESSINS%20ET%20AUTRES/WORK%20PROCESS%20ILLUSTRATIONS/Workprocess_illustrations_portfolio_HH-09.png" alt="Brief" />
-            <h3>01. Immersion &amp; Brief</h3>
-            <p>Analyse des besoins, écoute de votre vision et étude concurrentielle ciblée.</p>
-          </div>
-          <div class="drawer-card-item">
-            <img src="PREMIERS%20DESSINS%20ET%20AUTRES/WORK%20PROCESS%20ILLUSTRATIONS/Workprocess_illustrations_portfolio_HH-10.png" alt="Idéation" />
-            <h3>02. Idéation &amp; Moodboard</h3>
-            <p>Recherches graphiques, planches d'ambiance et définition de la direction artistique.</p>
-          </div>
-          <div class="drawer-card-item">
-            <img src="PREMIERS%20DESSINS%20ET%20AUTRES/WORK%20PROCESS%20ILLUSTRATIONS/Workprocess_illustrations_portfolio_HH-11.png" alt="Conception" />
-            <h3>03. Conception &amp; Retours</h3>
-            <p>Production des pistes créatives et ajustements minutieux selon vos retours.</p>
-          </div>
-          <div class="drawer-card-item">
-            <img src="PREMIERS%20DESSINS%20ET%20AUTRES/WORK%20PROCESS%20ILLUSTRATIONS/Workprocess_illustrations_portfolio_HH-12.png" alt="Livraison" />
-            <h3>04. Livrables &amp; Suivi</h3>
-            <p>Fourniture de tous les fichiers sources HD prêts pour impression et publication web.</p>
-          </div>
-        </div>
+  <!-- COMPÉTENCES -->
+  <section class="tools-section" id="outils" data-theme="pervenche">
+    <div class="tools-pin" data-tools-rise>
+      <div class="tools-sticky">
+        <h3 class="t-title tools-label">Mes outils<br><em>du quotidien</em></h3>
+        <ul class="tools-cloud" aria-label="Mes outils">
+          <li class="tool-chip" style="--x:14%;--y:22%;--mx:16%;--my:14%;--r:-8deg;--o:2"><img src="images/outils/illustrator.svg" alt="Illustrator" draggable="false"></li>
+          <li class="tool-chip" style="--x:38%;--y:13%;--mx:50%;--my:10%;--r:6deg;--o:5"><img src="images/outils/photoshop.svg" alt="Photoshop" draggable="false"></li>
+          <li class="tool-chip" style="--x:62%;--y:14%;--mx:84%;--my:15%;--r:-5deg;--o:7"><img src="images/outils/indesign.png" alt="InDesign" draggable="false"></li>
+          <li class="tool-chip" style="--x:84%;--y:20%;--mx:28%;--my:27%;--r:9deg;--o:0"><img src="images/outils/figma.svg" alt="Figma" draggable="false"></li>
+          <li class="tool-chip" style="--x:90%;--y:48%;--mx:72%;--my:28%;--r:-10deg;--o:8"><img src="images/outils/canva.svg" alt="Canva" draggable="false"></li>
+          <li class="tool-chip" style="--x:10%;--y:58%;--mx:16%;--my:74%;--r:7deg;--o:4"><img src="images/outils/notion.svg" alt="Notion" draggable="false"></li>
+          <li class="tool-chip" style="--x:32%;--y:84%;--mx:50%;--my:72%;--r:-6deg;--o:6"><img src="images/outils/adobe.svg" alt="Suite Adobe" draggable="false"></li>
+          <li class="tool-chip" style="--x:58%;--y:85%;--mx:84%;--my:76%;--r:10deg;--o:1"><img src="images/outils/capcut.svg" alt="CapCut" draggable="false"></li>
+          <li class="tool-chip" style="--x:82%;--y:78%;--mx:70%;--my:89%;--r:5deg;--o:3"><img src="images/outils/claude.svg" alt="Claude IA" draggable="false"></li>
+        </ul>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- FAQ Modal -->
-  <div class="modal-backdrop" id="faqModal" role="dialog" aria-modal="true">
-    <div class="modal-container">
-      <div class="modal-header">
-        <h2 style="font-size: 1.4rem; font-weight: 800;">Foire Aux Questions (FAQ)</h2>
-        <button class="modal-close-btn" onclick="closeModal('faqModal')">✕</button>
-      </div>
-      <div class="modal-body" style="gap: 1rem;">
-        <div class="drawer-card-item">
-          <h3>Quels sont vos délais habituels pour un projet ?</h3>
-          <p>Comptez généralement 1 à 2 semaines pour une identité visuelle complète ou un pack packaging, et quelques jours pour des visuels de communication digitale ou un set d'affiches. Un calendrier précis est convenu dès le départ.</p>
-        </div>
-        <div class="drawer-card-item">
-          <h3>Comment se déroule la collaboration à distance ?</h3>
-          <p>Je travaille couramment en remote avec des clients en Afrique et à l'international. Nous échangeons par visioconférence (Google Meet), WhatsApp ou e-mail avec partages d'avancement sur Figma.</p>
-        </div>
-        <div class="drawer-card-item">
-          <h3>Quels formats de fichiers me remettez-vous à la livraison ?</h3>
-          <p>Tous les fichiers exploitables sans perte de qualité (AI, EPS, SVG, PDF Haute Définition avec traits de coupe pour imprimeurs) ainsi que les formats PNG transparent et JPEG pour le digital.</p>
-        </div>
-        <div class="drawer-card-item">
-          <h3>Prenez-vous en charge la direction artistique continue de marques ?</h3>
-          <p>Absolument. Comme pour mes collaborations avec Canalbox ou HOME Residence Hotel, je propose des forfaits d'accompagnement mensuels pour assurer la cohérence graphique de vos campagnes.</p>
-        </div>
-      </div>
+  <!-- APERÇU PASSIONS & INSPIRATIONS -->
+  <section class="wrap teaser" data-theme="marine">
+    <div data-reveal>
+      <h2 class="t-title">Mes <em>passions</em></h2>
+      <p class="lead" style="margin-top:1.5rem;color:var(--muted)">Et si on explorait au-delà des commandes ? Illustrations libres, lettrages vibrants et recherches graphiques personnelles : découvrez mon univers !</p>
+      <a class="btn" href="passions.html">Découvrir mes inspirations →</a>
     </div>
-  </div>
+    <div class="teaser-pics" aria-hidden="true">
+      <figure class="p1" data-parallax=".08"><img src="images/accueil/inspirations-1.png" alt="" loading="lazy"></figure>
+      <figure class="p2" data-parallax="-.12"><img src="images/accueil/inspirations-2.png" alt="" loading="lazy"></figure>
+      <figure class="p3" data-parallax=".18"><img src="images/accueil/inspirations-3.png" alt="" loading="lazy"></figure>
+    </div>
+  </section>
 
-  <!-- Application Engine avec cache-buster -->
-  <script src="app.js?v=20260908_13"></script>
+  <!-- CONTACT -->
+  <section class="wrap contact" id="contact" data-theme="lavande">
+    <h2 class="t-big" data-reveal>Mes coordonnées</h2>
+    <div class="contact-row">
+      <a class="mail magnetic" href="mailto:houngbadjihelciane@gmail.com">M'écrire</a>
+      <ul class="contact-links">
+        <li><span>Email</span><a href="mailto:houngbadjihelciane@gmail.com">houngbadjihelciane@gmail.com</a></li>
+        <li><span>LinkedIn</span><a href="https://www.linkedin.com/in/helciane-houngbadji-a723361bb" target="_blank" rel="noopener">Helciane Hougbadji</a></li>
+        <li><span>Instagram</span><a href="https://www.instagram.com/heltza_design/" target="_blank" rel="noopener">@heltza_design</a></li>
+        <li><span>Statut</span><strong style="color:var(--rose)">● Disponible pour nouveaux projets</strong></li>
+        <li><span>Basée à</span>Cotonou, Bénin <span class="nowrap">• Remote mondial</span></li>
+      </ul>
+    </div>
+  </section>
+</main>
+<footer class="foot"><span>© 2026 Helciane Hougbadji</span><a href="index.html#contact">Me contacter</a></footer>
+<!-- Bibliothèques d'animation (Lenis, GSAP, SplitText) -->
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/SplitText.min.js"></script>
+<script src="assets/js/main.js?v=20261017"></script>
 </body>
 </html>

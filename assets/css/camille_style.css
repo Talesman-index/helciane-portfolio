@@ -553,6 +553,20 @@ body[data-theme="marine"] .fact .logo-white{opacity:1}
 .proj.boxed .proj-meta div{justify-content:flex-start;align-items:center;gap:.9rem}
 .proj.boxed .proj-meta dd{text-align:left}
 .proj.boxed .proj-tools{justify-content:flex-start}
+/* Contraste élevé en thème sombre (marine) pour les cartes projets */
+body[data-theme="marine"] .proj.boxed .proj-head{
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.16);
+  box-shadow:0 40px 80px -60px rgba(0,0,0,.85);
+  -webkit-backdrop-filter:blur(14px);
+  backdrop-filter:blur(14px);
+}
+body[data-theme="marine"] .proj.boxed .proj-title{color:#FFFFFF}
+body[data-theme="marine"] .proj.boxed .proj-text{color:rgba(235,237,255,.92)}
+body[data-theme="marine"] .proj.boxed .proj-text strong{color:#FFFFFF}
+body[data-theme="marine"] .proj.boxed .proj-meta{border-top-color:rgba(255,255,255,.14)}
+body[data-theme="marine"] .proj.boxed .proj-meta dt{color:var(--rose);font-weight:500}
+body[data-theme="marine"] .proj.boxed .proj-meta dd{color:#FFFFFF}
 /* Variante « side » (vidéos verticales ou carrées : Logo Munch, Interview Brut, Dixneuf) : la carte de texte à gauche de la vidéo */
 @media (min-width:900px){
   .proj.boxed.side{--side-w:22rem;grid-template-columns:minmax(0,1fr) var(--side-w);align-items:center}

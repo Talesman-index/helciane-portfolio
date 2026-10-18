@@ -51,6 +51,9 @@ const server = http.createServer((req, res) => {
       filePath = path.join(filePath, 'index.html');
     }
 
+    const ext = path.extname(filePath).toLowerCase();
+    const contentType = MIME_TYPES[ext] || 'application/octet-stream';
+
     const range = req.headers.range;
     if (range && (ext === '.mp4' || ext === '.mov' || ext === '.webm')) {
       const parts = range.replace(/bytes=/, '').split('-');

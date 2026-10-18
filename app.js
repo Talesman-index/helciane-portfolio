@@ -905,6 +905,16 @@ void main(){
   const pageProjs = $$('.proj[id]');
   if (pageProjs.length) {
     const projContainer = $('.projects');
+    const heroSection = $('.p-hero');
+    const heroCoverImg = $('.p-hero .cover img') || $('.ph-visual .cover img');
+    const catCoverSrc = (heroSection && heroSection.dataset.catCover) ||
+                        (heroCoverImg ? (heroCoverImg.getAttribute('src') || heroCoverImg.src) : '');
+    const catCoverAlt = (heroSection && heroSection.dataset.catTitle) ? `${heroSection.dataset.catTitle}, aperçu des réalisations` : (heroCoverImg ? (heroCoverImg.getAttribute('alt') || '') : '');
+    const heroBadgeText = $('.ph-badge textPath');
+    const catBadgeText = heroBadgeText ? heroBadgeText.textContent : '';
+    const heroTools = $('[data-tools]');
+    const catToolsHtml = heroTools ? heroTools.innerHTML : '';
+    let isInitialProjectLoad = true;
 
     // Catalogue des projets pour suggestions riches
     const CATALOGUE_SUGGESTIONS = [
@@ -936,7 +946,7 @@ void main(){
         const n = $('.proj-n', p)?.textContent.trim() || '';
         const title = $('.proj-title', p)?.textContent.trim() || '';
         const sub = $('.proj-meta dd', p)?.textContent.trim() || 'Réalisation Helciane Hougbadji';
-        const img = $('img', p)?.getAttribute('src') || '';
+        const img = p.dataset.cover || $('img', p)?.getAttribute('src') || '';
         return {
           page: `#${p.id}`,
           cat: n ? `Projet ${n}` : 'Projet',
@@ -987,7 +997,13 @@ void main(){
           e.preventDefault();
           const targetId = a.getAttribute('href').replace('#', '');
           history.pushState(null, '', `#${targetId}`);
-          handleHash(true);
+          showSingleProject(targetId);
+          const el = document.getElementById(targetId);
+          if (el) {
+            setTimeout(() => {
+              el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 60);
+          }
         });
       });
     }
@@ -997,6 +1013,28 @@ void main(){
         pageProjs.forEach(p => { p.style.display = ''; });
         if (sugSection) sugSection.style.display = 'none';
         $$('.ph-toc a').forEach(a => a.classList.toggle('is-active', a.getAttribute('href') === '#tous'));
+
+        // Restaurer la couverture par défaut de la catégorie
+        if (heroCoverImg && catCoverSrc && heroCoverImg.getAttribute('src') !== catCoverSrc) {
+          heroCoverImg.classList.add('is-switching');
+          const pre = new Image();
+          pre.onload = () => {
+            heroCoverImg.src = catCoverSrc;
+            heroCoverImg.alt = catCoverAlt;
+            setTimeout(() => heroCoverImg.classList.remove('is-switching'), 50);
+          };
+          pre.onerror = () => {
+            heroCoverImg.src = catCoverSrc;
+            heroCoverImg.classList.remove('is-switching');
+          };
+          pre.src = catCoverSrc;
+        }
+        if (heroBadgeText && catBadgeText) {
+          heroBadgeText.textContent = catBadgeText;
+        }
+        if (heroTools && catToolsHtml) {
+          heroTools.innerHTML = catToolsHtml;
+        }
         return;
       }
 
@@ -1018,11 +1056,51 @@ void main(){
         a.classList.toggle('is-active', a.getAttribute('href') === `#${active.id}`);
       });
 
+      // Mettre à jour l'image de couverture du hero avec celle du projet actif
+      const titleEl = $('.proj-title', active);
+      const activeTitle = titleEl ? titleEl.textContent.trim() : '';
+      const activeCover = active.dataset.cover ||
+        ($('.gal-media img', active) && ($('.gal-media img', active).dataset.full || $('.gal-media img', active).getAttribute('src'))) ||
+        ($('img', active) && ($('img', active).dataset.full || $('img', active).getAttribute('src')));
+
+      if (heroCoverImg && activeCover) {
+        if (isInitialProjectLoad) {
+          heroCoverImg.src = activeCover;
+          heroCoverImg.alt = activeTitle ? `${activeTitle} - Aperçu` : catCoverAlt;
+        } else if (heroCoverImg.getAttribute('src') !== activeCover) {
+          heroCoverImg.classList.add('is-switching');
+          const pre = new Image();
+          pre.onload = () => {
+            heroCoverImg.src = activeCover;
+            heroCoverImg.alt = activeTitle ? `${activeTitle} - Aperçu` : catCoverAlt;
+            setTimeout(() => heroCoverImg.classList.remove('is-switching'), 50);
+          };
+          pre.onerror = () => {
+            heroCoverImg.src = activeCover;
+            heroCoverImg.classList.remove('is-switching');
+          };
+          pre.src = activeCover;
+        }
+      }
+
+      // Mettre à jour le texte du badge circulaire
+      if (heroBadgeText && activeTitle) {
+        heroBadgeText.textContent = `Helciane Hougbadji ✦ ${activeTitle} ✦ Portfolio ✦ `;
+      }
+
+      // Mettre à jour les outils du hero avec ceux du projet actif
+      const projTools = $('.proj-tools', active);
+      if (projTools && heroTools) {
+        heroTools.innerHTML = projTools.innerHTML;
+      }
+
       // Mettre à jour les suggestions
       if (sugSection) {
         sugSection.style.display = '';
         renderSuggestions(active);
       }
+
+      isInitialProjectLoad = false;
 
       if (window.lenis && typeof window.lenis.resize === 'function') {
         window.lenis.resize();
@@ -1037,9 +1115,11 @@ void main(){
       if (scroll && targetId !== 'tous') {
         const el = document.getElementById(targetId);
         if (el) {
-          setTimeout(() => {
-            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }, 60);
+          if (window.scrollY > 250) {
+            setTimeout(() => {
+              el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 60);
+          }
         }
       }
     }

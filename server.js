@@ -51,15 +51,33 @@ const server = http.createServer((req, res) => {
       filePath = path.join(filePath, 'index.html');
     }
 
-    const ext = path.extname(filePath).toLowerCase();
-    const contentType = MIME_TYPES[ext] || 'application/octet-stream';
+    const range = req.headers.range;
+    if (range && (ext === '.mp4' || ext === '.mov' || ext === '.webm')) {
+      const parts = range.replace(/bytes=/, '').split('-');
+      const start = parseInt(parts[0], 10);
+      const end = parts[1] ? parseInt(parts[1], 10) : stats.size - 1;
+      const chunksize = (end - start) + 1;
+      const fileStream = fs.createReadStream(filePath, { start, end });
+      res.writeHead(206, {
+        'Content-Range': `bytes ${start}-${end}/${stats.size}`,
+        'Accept-Ranges': 'bytes',
+        'Content-Length': chunksize,
+        'Content-Type': contentType
+      });
+      fileStream.pipe(res);
+      return;
+    }
 
     fs.readFile(filePath, (readErr, content) => {
       if (readErr) {
         res.writeHead(500);
         res.end(`Erreur serveur: ${readErr.code}`);
       } else {
-        res.writeHead(200, { 'Content-Type': contentType });
+        res.writeHead(200, {
+          'Content-Type': contentType,
+          'Accept-Ranges': 'bytes',
+          'Content-Length': stats.size
+        });
         res.end(content);
       }
     });

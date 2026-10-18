@@ -746,6 +746,9 @@ body[data-theme="marine"] .sug-card-sub{color:rgba(235,237,255,.88)}
 .gal-row--video{width:100%;margin:clamp(.5rem,1.5vw,1.2rem) auto}
 .gal-item--video{width:100%;cursor:default !important}
 .gal-item--video .player{width:100%;aspect-ratio:16/9;border-radius:22px;box-shadow:0 40px 90px -40px rgba(15,26,74,.6)}
+.gal-row--video.vertical{display:flex;justify-content:center}
+.gal-item--video.vertical{width:min(100%,28rem);max-width:28rem;margin:0 auto}
+.gal-item--video.vertical .player{aspect-ratio:720/1024;width:100%}
 body[data-theme="marine"] .gal-item--video .player{box-shadow:0 40px 90px -40px rgba(0,0,0,.85);border:1px solid rgba(255,255,255,.12)}
 .player.playing{cursor:auto}
 .player.playing .play{opacity:0;pointer-events:none;transform:scale(.5)}

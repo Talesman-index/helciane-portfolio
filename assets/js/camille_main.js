@@ -699,48 +699,335 @@ void main(){
     measure();
   });
 
-  /* ---------- 12. Visionneuse d'images ---------- */
-  const lb = $('.lightbox');
-  if (lb) {
-    const big = $('img', lb), count = $('.lb-count', lb);
-    let list = [], idx = 0, back = null;
-    const show = i => {
-      idx = (i + list.length) % list.length;
-      const im = list[idx];
-      big.src = im.dataset.full || im.currentSrc || im.src; big.alt = im.alt;
-      if (count) count.textContent = `${idx + 1} / ${list.length}`;
-    };
-    const open = im => {
-      // les copies (data-clone, pour les bandes qui bouclent) ne comptent pas : on ouvre la photo d'origine
-      list = $$('img', im.closest('[data-lightbox]')).filter(x => !x.closest('[data-clone]'));
-      if (im.closest('[data-clone]')) im = list.find(x => x.dataset.i === im.dataset.i) || list[0];
-      back = document.activeElement; show(list.indexOf(im));
-      lb.classList.add('open'); stopScroll();
-      const c = $('.lb-close', lb); if (c) c.focus({ preventScroll: true });
-    };
-    const close = () => {
-      if (!lb.classList.contains('open')) return;
-      lb.classList.remove('open'); startScroll();
-      if (back && back.focus) back.focus({ preventScroll: true });
-    };
-    $$('[data-lightbox] img').forEach(im => {
-      const f = im.closest('figure');
-      if (!f.hasAttribute('data-clone')) { f.tabIndex = 0; f.setAttribute('role', 'button'); f.setAttribute('aria-label', `Agrandir : ${im.alt}`); }
-      f.addEventListener('click', () => open(im));
-      f.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(im); } });
-    });
-    lb.addEventListener('click', e => {
-      if (e.target.closest('.lb-prev')) show(idx - 1);
-      else if (e.target.closest('.lb-next')) show(idx + 1);
-      else if (e.target !== big) close();
-    });
-    addEventListener('keydown', e => {
-      if (!lb.classList.contains('open')) return;
-      if (e.key === 'Escape') close();
-      if (e.key === 'ArrowLeft') show(idx - 1);
-      if (e.key === 'ArrowRight') show(idx + 1);
-    });
+  /* ---------- 12. Galerie & Visionneuse de Projets ---------- */
+  let lb = $('.lightbox');
+  if (!lb) {
+    lb = document.createElement('div');
+    lb.className = 'lightbox';
+    lb.setAttribute('role', 'dialog');
+    lb.setAttribute('aria-modal', 'true');
+    lb.setAttribute('aria-label', 'Galerie de projets');
+    lb.setAttribute('data-lenis-prevent', '');
+    document.body.appendChild(lb);
   }
+
+  // Structure HTML interne de la visionneuse
+  lb.innerHTML = `
+    <div class="lb-header">
+      <div class="lb-meta">
+        <div class="lb-meta-row">
+          <span class="lb-badge">✦ Galerie</span>
+          <h2 class="lb-title"></h2>
+        </div>
+        <p class="lb-caption"></p>
+      </div>
+      <div class="lb-actions">
+        <button type="button" class="lb-btn lb-zoom" aria-label="Agrandir / Réduire le visuel" title="Zoomer (Z)">⤢</button>
+        <button type="button" class="lb-btn lb-close" aria-label="Fermer la galerie (Échap)" title="Fermer (Échap)">
+          <span class="lb-close-icon" aria-hidden="true">✕</span>
+          <span class="lb-close-text">Fermer</span>
+        </button>
+      </div>
+    </div>
+    <div class="lb-stage">
+      <button type="button" class="lb-prev" aria-label="Visuel précédent (←)" title="Précédent (←)">‹</button>
+      <div class="lb-media-wrap">
+        <img class="lb-img" alt="" src="" style="display:none">
+        <video class="lb-video" controls playsinline loop style="display:none"></video>
+      </div>
+      <button type="button" class="lb-next" aria-label="Visuel suivant (→)" title="Suivant (→)">›</button>
+    </div>
+    <div class="lb-footer">
+      <div class="lb-count-pill">
+        <span class="lb-current">1</span> / <span class="lb-total">1</span>
+      </div>
+      <div class="lb-thumbs" aria-label="Vignettes de la galerie"></div>
+      <span class="lb-hint">Naviguer avec ← / → · Fermer avec Échap</span>
+    </div>
+  `;
+
+  const lbImg = $('.lb-img', lb);
+  const lbVideo = $('.lb-video', lb);
+  const lbWrap = $('.lb-media-wrap', lb);
+  const lbTitle = $('.lb-title', lb);
+  const lbCaption = $('.lb-caption', lb);
+  const lbCur = $('.lb-current', lb);
+  const lbTot = $('.lb-total', lb);
+  const lbThumbs = $('.lb-thumbs', lb);
+  const lbZoom = $('.lb-zoom', lb);
+  const lbCloseBtn = $('.lb-close', lb);
+
+  let galleryList = [];
+  let currentIdx = 0;
+  let previousFocus = null;
+
+  const renderThumbs = () => {
+    if (!lbThumbs) return;
+    lbThumbs.innerHTML = '';
+    if (galleryList.length <= 1) return;
+    galleryList.forEach((item, idx) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = `lb-thumb ${idx === currentIdx ? 'is-active' : ''}`;
+      btn.setAttribute('aria-label', `Voir visuel ${idx + 1} sur ${galleryList.length}`);
+      const thumbSrc = item.thumb || item.src;
+      btn.innerHTML = `<img src="${thumbSrc}" alt="">`;
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        showItem(idx);
+      });
+      lbThumbs.appendChild(btn);
+    });
+  };
+
+  const showItem = i => {
+    if (!galleryList.length) return;
+    currentIdx = (i + galleryList.length) % galleryList.length;
+    const item = galleryList[currentIdx];
+
+    lbWrap.classList.remove('is-zoomed');
+    lbTitle.textContent = item.projectTitle || 'Projet';
+    lbCaption.textContent = item.caption || '';
+    lbCur.textContent = String(currentIdx + 1);
+    lbTot.textContent = String(galleryList.length);
+
+    if (item.type === 'video') {
+      lbImg.style.display = 'none';
+      lbImg.src = '';
+      lbVideo.style.display = 'block';
+      lbVideo.src = item.src;
+      if (item.poster) lbVideo.poster = item.poster;
+      const p = lbVideo.play();
+      if (p) p.catch(() => {});
+    } else {
+      if (lbVideo) {
+        lbVideo.pause();
+        lbVideo.style.display = 'none';
+        lbVideo.src = '';
+      }
+      lbImg.style.display = 'block';
+      lbImg.style.opacity = '0';
+      lbImg.src = item.src;
+      lbImg.alt = item.caption || item.projectTitle || '';
+      requestAnimationFrame(() => {
+        lbImg.style.opacity = '1';
+      });
+    }
+
+    $$('.lb-thumb', lbThumbs).forEach((th, idx) => {
+      const isAct = idx === currentIdx;
+      th.classList.toggle('is-active', isAct);
+      if (isAct) th.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    });
+  };
+
+  const openGallery = (items, startIdx = 0) => {
+    galleryList = items;
+    previousFocus = document.activeElement;
+    renderThumbs();
+    showItem(startIdx);
+    lb.classList.add('open');
+    stopScroll();
+    if (Sound && Sound.whoosh) Sound.whoosh();
+    lbCloseBtn.focus({ preventScroll: true });
+  };
+
+  const closeGallery = () => {
+    if (!lb.classList.contains('open')) return;
+    lb.classList.remove('open');
+    lbWrap.classList.remove('is-zoomed');
+    if (lbVideo) {
+      lbVideo.pause();
+      lbVideo.src = '';
+    }
+    startScroll();
+    if (Sound && Sound.whoosh) Sound.whoosh();
+    if (previousFocus && previousFocus.focus) previousFocus.focus({ preventScroll: true });
+  };
+
+  const toggleZoom = () => {
+    if (galleryList[currentIdx]?.type === 'video') return;
+    lbWrap.classList.toggle('is-zoomed');
+  };
+
+  lb.addEventListener('click', e => {
+    if (e.target.closest('.lb-close')) {
+      closeGallery();
+    } else if (e.target.closest('.lb-prev')) {
+      showItem(currentIdx - 1);
+      if (Sound && Sound.click) Sound.click();
+    } else if (e.target.closest('.lb-next')) {
+      showItem(currentIdx + 1);
+      if (Sound && Sound.click) Sound.click();
+    } else if (e.target.closest('.lb-zoom')) {
+      toggleZoom();
+    } else if (e.target === lbImg) {
+      toggleZoom();
+    } else if (!e.target.closest('.lb-header') && !e.target.closest('.lb-footer') && !e.target.closest('.lb-media-wrap')) {
+      closeGallery();
+    }
+  });
+
+  addEventListener('keydown', e => {
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') {
+      closeGallery();
+    } else if (e.key === 'ArrowLeft') {
+      showItem(currentIdx - 1);
+    } else if (e.key === 'ArrowRight') {
+      showItem(currentIdx + 1);
+    } else if (e.key === 'z' || e.key === 'Z') {
+      toggleZoom();
+    }
+  });
+
+  let touchStartX = 0, touchStartY = 0;
+  lb.addEventListener('touchstart', e => {
+    if (e.touches && e.touches[0]) {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+    }
+  }, { passive: true });
+
+  lb.addEventListener('touchend', e => {
+    if (e.changedTouches && e.changedTouches[0]) {
+      const deltaX = e.changedTouches[0].clientX - touchStartX;
+      const deltaY = e.changedTouches[0].clientY - touchStartY;
+      if (Math.abs(deltaX) > 45 && Math.abs(deltaX) > Math.abs(deltaY) * 1.4) {
+        if (deltaX < 0) showItem(currentIdx + 1);
+        else showItem(currentIdx - 1);
+      }
+    }
+  }, { passive: true });
+
+  const bindGalleryTriggers = () => {
+    const projects = $$('article.proj');
+    if (projects.length) {
+      projects.forEach(proj => {
+        const titleEl = proj.querySelector('.proj-title') || proj.querySelector('h2');
+        const projTitle = titleEl ? titleEl.textContent.trim() : 'Projet';
+
+        const visualFigures = $$('.gal-item, .poster, .anim, figure:has(img), figure:has(video)', proj)
+          .filter(f => !f.closest('[data-clone]'));
+
+        const projectItems = [];
+        visualFigures.forEach(fig => {
+          const v = $('video', fig);
+          const im = $('img', fig);
+          if (v) {
+            const vSrc = v.currentSrc || $('source', v)?.src || v.src;
+            if (vSrc) {
+              projectItems.push({
+                type: 'video',
+                src: vSrc,
+                poster: v.poster || (im ? im.src : ''),
+                thumb: v.poster || (im ? im.src : ''),
+                projectTitle,
+                caption: `${projTitle} · Vidéo Motion / Animation`,
+                fig
+              });
+            }
+          } else if (im) {
+            const imSrc = im.dataset.full || im.currentSrc || im.src;
+            if (imSrc) {
+              projectItems.push({
+                type: 'image',
+                src: imSrc,
+                thumb: imSrc,
+                projectTitle,
+                caption: im.alt || `${projTitle} · Visuel`,
+                fig
+              });
+            }
+          }
+        });
+
+        projectItems.forEach((item, itemIdx) => {
+          const fig = item.fig;
+          if (!fig) return;
+          fig.tabIndex = 0;
+          fig.setAttribute('role', 'button');
+          fig.setAttribute('data-cursor', 'Agrandir');
+          fig.setAttribute('aria-label', `Ouvrir dans la galerie : ${item.caption}`);
+
+          const clickHandler = e => {
+            if (e.target.closest('.player-ui, .pl-sound, .pl-seek, .pl-play')) return;
+            e.preventDefault();
+            e.stopPropagation();
+            openGallery(projectItems, itemIdx);
+          };
+
+          fig.addEventListener('click', clickHandler);
+          fig.addEventListener('keydown', e => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              openGallery(projectItems, itemIdx);
+            }
+          });
+        });
+      });
+    }
+
+    $$('.drag-track, [data-lightbox]').forEach(track => {
+      if (track.closest('article.proj')) return;
+      const trackImgs = $$('img', track).filter(x => !x.closest('[data-clone]'));
+      if (!trackImgs.length) return;
+      const trackItems = trackImgs.map(im => ({
+        type: 'image',
+        src: im.dataset.full || im.currentSrc || im.src,
+        thumb: im.dataset.full || im.currentSrc || im.src,
+        projectTitle: document.title.split('·')[0].trim() || 'Création',
+        caption: im.alt || 'Visuel artistique'
+      }));
+
+      trackImgs.forEach((im, idx) => {
+        const fig = im.closest('figure') || im;
+        fig.tabIndex = 0;
+        fig.setAttribute('role', 'button');
+        fig.setAttribute('data-cursor', 'Agrandir');
+        fig.setAttribute('aria-label', `Agrandir : ${im.alt}`);
+        const handler = e => {
+          e.preventDefault();
+          openGallery(trackItems, idx);
+        };
+        fig.addEventListener('click', handler);
+        fig.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            openGallery(trackItems, idx);
+          }
+        });
+      });
+    });
+
+    $$('.ph-visual .cover').forEach(cov => {
+      const im = $('img', cov);
+      if (!im) return;
+      cov.tabIndex = 0;
+      cov.setAttribute('role', 'button');
+      cov.setAttribute('data-cursor', 'Agrandir');
+      cov.setAttribute('aria-label', `Agrandir la couverture : ${im.alt}`);
+      const covHandler = e => {
+        e.preventDefault();
+        openGallery([{
+          type: 'image',
+          src: im.dataset.full || im.currentSrc || im.src,
+          thumb: im.dataset.full || im.currentSrc || im.src,
+          projectTitle: $('h1')?.textContent.trim() || 'Projet',
+          caption: im.alt || 'Visuel de présentation'
+        }], 0);
+      };
+      cov.addEventListener('click', covHandler);
+      cov.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          covHandler(e);
+        }
+      });
+    });
+  };
+
+  bindGalleryTriggers();
 
   /* ---------- 13. Vidéos : lecture quand elles sont visibles ---------- */
   const vIO = new IntersectionObserver(entries => entries.forEach(e => {

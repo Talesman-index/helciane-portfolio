@@ -2,14 +2,62 @@
    Portfolio Camille Chesneau — feuille de style commune
    Pour changer les couleurs ou les polices : modifiez :root
    ========================================================= */
-:root{
+:root,
+:root[data-palette="classic"] {
   --marine:#0F1A4A;     /* bleu marine : couleur principale */
   --roi:#3B47B8;        /* bleu roi doux : liens, accents */
   --pervenche:#9AA6F2;  /* pervenche */
   --lavande:#D9DCFB;    /* lavande bleutée */
   --brume:#F3F3FD;      /* brume : fond clair */
   --rose:#FF8FB1;       /* rose : touches (boutons, curseur, détails) */
+  --marine-rgb:15,26,74;
+}
 
+/* Palette 2 : Solaire & Terracotta Créatif (Éditorial, chaleureux & audacieux) */
+:root[data-palette="solaire"] {
+  --marine:#1C1217;     /* espresso chaud / charbon terre */
+  --roi:#D94E1B;        /* terracotta / orange brûlé */
+  --pervenche:#C88C6B;  /* sable cuivré ambré */
+  --lavande:#F6DCD0;    /* pêche poudrée délicate */
+  --brume:#FAF6F0;      /* blanc lin & albâtre naturel */
+  --rose:#FF6B35;       /* tangerine corail vibrant */
+  --marine-rgb:28,18,23;
+}
+
+/* Palette 3 : Studio & Champagne Luxe (Haute joaillerie, épure haut de gamme) */
+:root[data-palette="champagne"] {
+  --marine:#141416;     /* onyx studio profond */
+  --roi:#B88344;        /* or brossé / ambre cognac */
+  --pervenche:#BEB29E;  /* grège minéral noble */
+  --lavande:#EBE3D7;    /* soie champagne soyeuse */
+  --brume:#F8F6F2;      /* blanc porcelaine chaleureux */
+  --rose:#D46238;       /* cuivre ambré chaud */
+  --marine-rgb:20,20,22;
+}
+
+/* Palette 4 : Matcha & Sorbet Pop (Organique, tonique & pop contemporain) */
+:root[data-palette="matcha"] {
+  --marine:#0C1813;     /* vert pin nuit profond */
+  --roi:#246B4E;        /* sauge impériale tonique */
+  --pervenche:#8EBFA4;  /* menthe givrée pastel */
+  --lavande:#D7EBDE;    /* matcha latte velouté */
+  --brume:#F4F8F5;      /* blanc crème matcha */
+  --rose:#FF5388;       /* sorbet framboise vif */
+  --marine-rgb:12,24,19;
+}
+
+/* Palette 5 : Cobalt Klein & Néon (Avant-garde artistique & percutant) */
+:root[data-palette="cobalt"] {
+  --marine:#080E24;     /* nuit Klein abyssale */
+  --roi:#2050FA;        /* bleu Klein électrique pur */
+  --pervenche:#85A0F8;  /* cobalt pastel aérien */
+  --lavande:#E2EAFF;    /* brume bleutée claire */
+  --brume:#F8F9FE;      /* blanc polaire immaculé */
+  --rose:#FF3366;       /* magenta néon futuriste */
+  --marine-rgb:8,14,36;
+}
+
+:root {
   --f-title:"Unbounded","Arial Black",system-ui,sans-serif;          /* titres */
   --f-serif:"Instrument Serif","Times New Roman",Georgia,serif;      /* mots en italique */
   --f-text:"Hanken Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif; /* texte courant */
@@ -17,10 +65,10 @@
   --pad:clamp(1.25rem,5vw,4.5rem);
   --ease:cubic-bezier(.2,.8,.2,1);
 }
-body[data-theme="marine"]   {--bg:var(--marine);   --fg:var(--lavande); --muted:var(--pervenche);      --accent:var(--rose)}
-body[data-theme="brume"]    {--bg:var(--brume);    --fg:var(--marine);  --muted:rgba(15,26,74,.68);    --accent:var(--roi)}
-body[data-theme="pervenche"]{--bg:var(--pervenche);--fg:var(--marine);  --muted:rgba(15,26,74,.76);    --accent:var(--marine)}
-body[data-theme="lavande"]  {--bg:var(--lavande);  --fg:var(--marine);  --muted:rgba(15,26,74,.7);     --accent:var(--roi)}
+body[data-theme="marine"]   {--bg:var(--marine);   --fg:var(--lavande); --muted:var(--pervenche);                  --accent:var(--rose)}
+body[data-theme="brume"]    {--bg:var(--brume);    --fg:var(--marine);  --muted:rgba(var(--marine-rgb),.68);         --accent:var(--roi)}
+body[data-theme="pervenche"]{--bg:var(--pervenche);--fg:var(--marine);  --muted:rgba(var(--marine-rgb),.76);         --accent:var(--marine)}
+body[data-theme="lavande"]  {--bg:var(--lavande);  --fg:var(--marine);  --muted:rgba(var(--marine-rgb),.7);          --accent:var(--roi)}
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
@@ -1108,6 +1156,191 @@ body[data-theme="marine"] .gal-item--video .player{box-shadow:0 40px 90px -40px 
   .vfull-cap{bottom:4.6rem}
   .lightbox{padding:4.5rem 1rem 4rem}
   .lightbox .lb-prev,.lightbox .lb-next{top:auto;bottom:.7rem;margin-top:0}
+}
+
+/* ========== Sélecteur de palettes chromatiques ========== */
+.palette-switcher {
+  position: fixed;
+  right: clamp(1rem, 2.5vw, 2rem);
+  bottom: clamp(1rem, 2.5vw, 2rem);
+  z-index: 85;
+  display: inline-flex;
+  align-items: center;
+  gap: .65rem;
+  padding: .42rem .55rem .42rem .95rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .82);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, .7);
+  box-shadow: 0 10px 32px -8px rgba(var(--marine-rgb), .22), 0 2px 6px rgba(var(--marine-rgb), .06);
+  color: var(--marine);
+  font-family: var(--f-text);
+  font-size: .84rem;
+  user-select: none;
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: opacity .4s ease, transform .4s cubic-bezier(.2,.8,.2,1), background-color .6s ease, border-color .6s ease, box-shadow .6s ease;
+}
+
+.palette-switcher.is-ready {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+body[data-theme="marine"] .palette-switcher {
+  background: rgba(var(--marine-rgb), .82);
+  border-color: rgba(255, 255, 255, .16);
+  color: var(--lavande);
+  box-shadow: 0 14px 40px -10px rgba(0, 0, 0, .55);
+}
+
+.palette-label {
+  display: inline-flex;
+  align-items: center;
+  gap: .38rem;
+  font-weight: 600;
+  font-size: .8rem;
+  letter-spacing: .02em;
+  opacity: .9;
+}
+
+.palette-spark {
+  color: var(--accent);
+  font-size: .95rem;
+  line-height: 1;
+  display: inline-block;
+  animation: pulse-spark 3s ease-in-out infinite;
+}
+
+@keyframes pulse-spark {
+  0%, 100% { transform: scale(1); opacity: .85; }
+  50% { transform: scale(1.18); opacity: 1; }
+}
+
+.palette-options {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+}
+
+.palette-btn {
+  position: relative;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  outline: none;
+  transition: transform .22s var(--ease), border-color .22s var(--ease), box-shadow .22s var(--ease);
+}
+
+.palette-btn:hover {
+  transform: scale(1.22);
+}
+
+.palette-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.palette-btn[aria-checked="true"] {
+  transform: scale(1.15);
+  border-color: var(--marine);
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+body[data-theme="marine"] .palette-btn[aria-checked="true"] {
+  border-color: #fff;
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.palette-swatch {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .18);
+}
+
+.swatch--classic {
+  background: linear-gradient(135deg, #0F1A4A 50%, #FF8FB1 50%);
+}
+
+.swatch--solaire {
+  background: linear-gradient(135deg, #1C1217 50%, #FF6B35 50%);
+}
+
+.swatch--champagne {
+  background: linear-gradient(135deg, #141416 50%, #C58F58 50%);
+}
+
+.swatch--matcha {
+  background: linear-gradient(135deg, #0C1813 50%, #FF5388 50%);
+}
+
+.swatch--cobalt {
+  background: linear-gradient(135deg, #080E24 50%, #2050FA 50%);
+}
+
+.palette-tooltip {
+  position: absolute;
+  bottom: calc(100% + 9px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  padding: .35rem .65rem;
+  border-radius: 7px;
+  background: var(--marine);
+  color: var(--brume);
+  font-family: var(--f-text);
+  font-size: .74rem;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, .28);
+  transition: opacity .18s ease, transform .18s ease;
+  z-index: 100;
+}
+
+.palette-tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 4px;
+  border-style: solid;
+  border-color: var(--marine) transparent transparent transparent;
+}
+
+.palette-btn:hover .palette-tooltip,
+.palette-btn:focus-visible .palette-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+@media (max-width: 640px) {
+  .palette-switcher {
+    padding: .32rem .45rem;
+    gap: .35rem;
+    bottom: clamp(.75rem, 2vw, 1.25rem);
+    right: clamp(.75rem, 2vw, 1.25rem);
+  }
+  .palette-label {
+    display: none;
+  }
+  .palette-btn {
+    width: 23px;
+    height: 23px;
+  }
+  .palette-tooltip {
+    display: none;
+  }
 }
 
 /* ========== Animations réduites (réglage système) ========== */

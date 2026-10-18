@@ -23,6 +23,36 @@
     set: (k, v) => { try { sessionStorage.setItem(k, v); } catch (e) {} },
     del: k => { try { sessionStorage.removeItem(k); } catch (e) {} }
   };
+
+  /* ---------- 0a. Palettes chromatiques & Thèmes ---------- */
+  const PALETTES = [
+    { id: 'classic', label: 'Marine & Rose', desc: 'Classique douce et intemporelle', swatch: 'classic' },
+    { id: 'solaire', label: 'Solaire & Terracotta', desc: 'Chaleureuse, éditoriale & moderne', swatch: 'solaire' },
+    { id: 'champagne', label: 'Studio & Champagne', desc: 'Élégance haute joaillerie & or cognac', swatch: 'champagne' },
+    { id: 'matcha', label: 'Matcha & Sorbet', desc: 'Organique, sauge & sorbet framboise', swatch: 'matcha' },
+    { id: 'cobalt', label: 'Cobalt & Néon', desc: 'Bleu Klein électrique & magenta néon', swatch: 'cobalt' }
+  ];
+
+  const getSavedPalette = () => {
+    try { return localStorage.getItem('cc-palette') || 'solaire'; }
+    catch (e) { return 'solaire'; }
+  };
+
+  const applyPalette = (id, save = true) => {
+    const valid = PALETTES.some(p => p.id === id) ? id : 'solaire';
+    root.setAttribute('data-palette', valid);
+    if (save) {
+      try { localStorage.setItem('cc-palette', valid); } catch (e) {}
+    }
+    $$('.palette-btn').forEach(btn => {
+      const isCur = btn.dataset.paletteId === valid;
+      btn.setAttribute('aria-checked', isCur ? 'true' : 'false');
+      btn.classList.toggle('is-active', isCur);
+    });
+  };
+
+  // Restauration immédiate
+  applyPalette(getSavedPalette(), false);
   const fontsReady = Promise.race([document.fonts ? document.fonts.ready : Promise.resolve(), wait(1500)]);
   // « gate » s'ouvre quand l'animation d'arrivée / la transition laisse voir la page
   let openGate; const gate = new Promise(r => { openGate = r; });
@@ -1331,5 +1361,45 @@ void main(){
     m.addEventListener('click', e => { if (e.target.closest('a')) set(false); });
     addEventListener('keydown', e => { if (e.key === 'Escape' && opened) { set(false); btn.focus(); } });
     addEventListener('resize', () => { if (opened && !isMobile()) set(false); });
+  }
+
+  /* ---------- 16. Sélecteur interactif de palettes chromatiques ---------- */
+  const initPaletteSwitcher = () => {
+    if ($('.palette-switcher')) return;
+    const cur = getSavedPalette();
+    const aside = document.createElement('aside');
+    aside.className = 'palette-switcher';
+    aside.setAttribute('aria-label', 'Sélecteur de palette chromatique');
+    
+    let html = `<div class="palette-label"><span class="palette-spark" aria-hidden="true">✦</span><span>Couleurs</span></div>`;
+    html += `<div class="palette-options" role="radiogroup" aria-label="Harmonies de couleurs du portfolio">`;
+    PALETTES.forEach(p => {
+      const isCur = p.id === cur;
+      html += `<button type="button" class="palette-btn ${isCur ? 'is-active' : ''}" data-palette-id="${p.id}" role="radio" aria-checked="${isCur ? 'true' : 'false'}" aria-label="${p.label} : ${p.desc}">
+        <span class="palette-swatch swatch--${p.swatch}" aria-hidden="true"></span>
+        <span class="palette-tooltip">${p.label}</span>
+      </button>`;
+    });
+    html += `</div>`;
+    aside.innerHTML = html;
+    document.body.appendChild(aside);
+
+    $$('.palette-btn', aside).forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.paletteId;
+        applyPalette(id, true);
+        if (typeof Sound !== 'undefined' && Sound && Sound.click) Sound.click();
+      });
+    });
+
+    // Apparition progressive après chargement
+    setTimeout(() => aside.classList.add('is-ready'), 600);
+    gate.then(() => setTimeout(() => aside.classList.add('is-ready'), 250)).catch(() => {});
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPaletteSwitcher);
+  } else {
+    initPaletteSwitcher();
   }
 })();

@@ -507,6 +507,8 @@ body[data-theme="marine"] .fact .logo-white{opacity:1}
 .ph-toc a span{display:grid;place-items:center;min-width:1.95rem;height:1.95rem;padding:0 .4rem;border-radius:999px;background:var(--rose);font-family:var(--f-serif);font-style:italic;font-size:1.05rem}
 .ph-toc a:hover{transform:translateY(-3px);background:var(--rose)}
 .ph-toc a:hover span{background:var(--marine);color:var(--brume)}
+.ph-toc a.is-active{background:var(--rose);color:var(--marine);box-shadow:0 6px 20px -4px rgba(255,143,177,.55);transform:translateY(-2px)}
+.ph-toc a.is-active span{background:var(--marine);color:var(--brume)}
 /* couverture : cadre rose, carte décalée derrière, pastille qui tourne */
 .ph-visual{position:relative;padding:1.2rem 1.2rem 2.4rem 2.4rem}
 .ph-card-back{position:absolute;inset:2.6rem 0 .8rem 3.6rem;border-radius:30px;background:var(--pervenche);transform:rotate(4deg);opacity:.75}
@@ -607,6 +609,128 @@ body[data-theme="marine"] .proj.boxed .proj-meta dd{color:#FFFFFF}
 .proj.boxed .posters{width:min(100%,60rem);margin-inline:auto}
 .proj.boxed .posters:has(> :nth-child(3)){width:100%;grid-template-columns:repeat(3,minmax(0,1fr))}
 .proj.boxed .posters:has(> :nth-child(3)) > :nth-child(even){margin-top:14%}
+
+/* ---------- Suggestions d'autres réalisations ---------- */
+.proj-suggestions{
+  padding:clamp(4rem,8vh,7rem) var(--pad);
+  border-top:1px solid color-mix(in srgb,var(--fg) 14%,transparent);
+  transition:background-color .8s var(--ease);
+}
+.sug-wrap{max-width:1400px;margin:0 auto}
+.sug-head{margin-bottom:clamp(2rem,4vw,3.5rem)}
+.sug-head .ph-kicker{
+  font-family:var(--f-title);
+  font-size:.78rem;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  color:var(--accent);
+  margin-bottom:.5rem;
+}
+.sug-title{
+  font-family:var(--f-title);
+  font-size:clamp(1.8rem,3.4vw,2.7rem);
+  font-weight:700;
+  letter-spacing:-.03em;
+  color:var(--fg);
+}
+.sug-title em{font-family:var(--f-serif);font-style:italic;font-weight:400}
+.sug-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(290px,1fr));
+  gap:clamp(1.5rem,3vw,2.4rem);
+}
+.sug-card{
+  display:flex;
+  flex-direction:column;
+  border-radius:24px;
+  background:rgba(255,255,255,.68);
+  border:1px solid rgba(15,26,74,.08);
+  padding:1.15rem;
+  text-decoration:none;
+  color:inherit;
+  box-shadow:0 20px 40px -25px rgba(15,26,74,.25);
+  transition:transform .4s var(--ease),box-shadow .4s var(--ease),background .4s var(--ease);
+}
+body[data-theme="marine"] .sug-card{
+  background:rgba(255,255,255,.07);
+  border-color:rgba(255,255,255,.14);
+  box-shadow:0 20px 40px -25px rgba(0,0,0,.6);
+}
+.sug-card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 30px 60px -25px rgba(15,26,74,.35);
+  background:rgba(255,255,255,.92);
+}
+body[data-theme="marine"] .sug-card:hover{
+  background:rgba(255,255,255,.12);
+  box-shadow:0 30px 60px -25px rgba(0,0,0,.8);
+}
+.sug-media{
+  position:relative;
+  aspect-ratio:16/11;
+  border-radius:16px;
+  overflow:hidden;
+  background:var(--marine);
+}
+.sug-media img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transition:transform .6s var(--ease);
+}
+.sug-card:hover .sug-media img{transform:scale(1.06)}
+.sug-pill{
+  position:absolute;
+  top:.9rem;
+  left:.9rem;
+  padding:.28rem .85rem;
+  border-radius:999px;
+  background:rgba(15,26,74,.82);
+  color:#fff;
+  font-family:var(--f-title);
+  font-size:.72rem;
+  font-weight:700;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+}
+.sug-info{
+  padding:1.1rem .3rem .3rem;
+  display:flex;
+  flex-direction:column;
+  flex-grow:1;
+}
+.sug-card-title{
+  font-family:var(--f-title);
+  font-size:1.22rem;
+  font-weight:700;
+  letter-spacing:-.02em;
+  margin-bottom:.35rem;
+  color:var(--fg);
+}
+body[data-theme="marine"] .sug-card-title{color:#FFFFFF}
+.sug-card-sub{
+  font-size:.92rem;
+  color:var(--muted);
+  margin-bottom:.9rem;
+  line-height:1.4;
+}
+body[data-theme="marine"] .sug-card-sub{color:rgba(235,237,255,.88)}
+.sug-arrow{
+  margin-top:auto;
+  font-family:var(--f-title);
+  font-size:.82rem;
+  font-weight:700;
+  color:var(--accent);
+  display:inline-flex;
+  align-items:center;
+  gap:.4rem;
+  transition:transform .3s var(--ease);
+}
+.sug-card:hover .sug-arrow{transform:translateX(5px)}
+
 /* Lecteur vidéo : image d'aperçu + gros bouton lecture */
 .player{position:relative;overflow:hidden;border-radius:18px;background:var(--marine);cursor:pointer;box-shadow:0 40px 70px -45px rgba(15,26,74,.6)}
 .player.wide{aspect-ratio:16/9}

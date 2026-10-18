@@ -900,6 +900,166 @@ void main(){
     });
     if (!seen.size) box.remove();
   });
+
+  /* ---------- 14.b Affichage projet unique & Suggestions de réalisations ---------- */
+  const pageProjs = $$('.proj[id]');
+  if (pageProjs.length) {
+    const projContainer = $('.projects');
+
+    // Catalogue des projets pour suggestions riches
+    const CATALOGUE_SUGGESTIONS = [
+      { id: 'solar-stark', page: 'branding.html#projet-1', cat: 'Branding', title: 'Solar Stark Club', sub: 'Tennis & Lifestyle', img: 'images/realisations/solar-stark-couverture.png' },
+      { id: 'sorberro', page: 'packagings.html#projet-1', cat: 'Packagings', title: 'Sorberro · Pure Freeze', sub: 'Glaces Artisanales & Food Truck', img: 'images/realisations/sorberro-couverture.png' },
+      { id: 'demeter-bowl', page: 'packagings.html#projet-2', cat: 'Packagings', title: "Demeter's Bowl", sub: 'Salad Bar & Bols Fraîcheur', img: 'images/realisations/demeter-bowl-couverture.png' },
+      { id: 'coffee-loffee', page: 'branding.html#projet-3', cat: 'Branding', title: 'Coffee Loffee', sub: 'Coffee Shop & Univers Graphique', img: 'MES%20PROJETS/COFFEE%20LOFEE/coffeeloffee%20copie-01.png' },
+      { id: 'canalbox', page: 'campagnes.html#projet-1', cat: 'Campagnes', title: 'Campagne Canalbox', sub: 'Social Media & Visuels 360°', img: 'MES%20PROJETS/CANALBOX%20PROJECTS/CANALBOX-01.png' },
+      { id: 'meet-n-eat', page: 'direction-artistique.html#projet-2', cat: 'Direction Artistique', title: "Meet N' Eat", sub: 'Food & Événementiel', img: "MES%20PROJETS/MEET%20N'%20EAT/MEET%20N'%20EAT-01.png" },
+      { id: 'baudelaire', page: 'signaletique.html#projet-1', cat: 'Signalétique', title: 'Bibliothèque Baudelaire', sub: "Design d'Espace & Pictogrammes", img: 'MES%20PROJETS/BAUDELAIRE/BAUDELAIRE-01.png' },
+      { id: 'peace-page', page: 'design-social.html#projet-2', cat: 'Design Social', title: 'Peace Page', sub: 'Notebook & Campagne Santé Mentale', img: 'MES%20PROJETS/PEACE%20PAGE/PEACE%20PAGE-01.png' }
+    ];
+
+    // Création du bloc suggestions
+    let sugSection = $('.proj-suggestions');
+    if (!sugSection && projContainer) {
+      sugSection = document.createElement('section');
+      sugSection.className = 'proj-suggestions';
+      projContainer.after(sugSection);
+    }
+
+    function renderSuggestions(activeProj) {
+      if (!sugSection) return;
+      const curFile = location.pathname.split('/').pop() || 'branding.html';
+      const activeId = activeProj ? activeProj.id : '';
+
+      // Suggestions issues de la même page (autres projets)
+      const samePage = pageProjs.filter(p => p.id !== activeId).map(p => {
+        const n = $('.proj-n', p)?.textContent.trim() || '';
+        const title = $('.proj-title', p)?.textContent.trim() || '';
+        const sub = $('.proj-meta dd', p)?.textContent.trim() || 'Réalisation Helciane Hougbadji';
+        const img = $('img', p)?.getAttribute('src') || '';
+        return {
+          page: `#${p.id}`,
+          cat: n ? `Projet ${n}` : 'Projet',
+          title,
+          sub,
+          img
+        };
+      });
+
+      // Suggestions croisées
+      const crossPage = CATALOGUE_SUGGESTIONS.filter(item => {
+        const itemFile = item.page.split('#')[0];
+        const itemId = item.page.split('#')[1];
+        if (itemFile === curFile && itemId === activeId) return false;
+        if (samePage.some(s => s.title.toLowerCase().includes(item.title.toLowerCase()) || item.title.toLowerCase().includes(s.title.toLowerCase()))) return false;
+        return true;
+      });
+
+      const list = [...samePage, ...crossPage].slice(0, 3);
+
+      sugSection.innerHTML = `
+        <div class="sug-wrap">
+          <div class="sug-head">
+            <p class="ph-kicker">Continuer l'exploration</p>
+            <h3 class="sug-title">Suggestions d'autres <em>réalisations</em></h3>
+          </div>
+          <div class="sug-grid">
+            ${list.map(s => `
+              <a class="sug-card" href="${s.page}">
+                <div class="sug-media">
+                  <span class="sug-pill">${s.cat}</span>
+                  <img src="${s.img}" alt="${s.title}" loading="lazy">
+                </div>
+                <div class="sug-info">
+                  <h4 class="sug-card-title">${s.title}</h4>
+                  <p class="sug-card-sub">${s.sub}</p>
+                  <span class="sug-arrow">Découvrir le projet →</span>
+                </div>
+              </a>
+            `).join('')}
+          </div>
+        </div>
+      `;
+
+      // Clics sur les cartes de la même page
+      $$('.sug-card[href^="#"]', sugSection).forEach(a => {
+        a.addEventListener('click', e => {
+          e.preventDefault();
+          const targetId = a.getAttribute('href').replace('#', '');
+          history.pushState(null, '', `#${targetId}`);
+          handleHash(true);
+        });
+      });
+    }
+
+    function showSingleProject(targetId) {
+      if (targetId === 'tous') {
+        pageProjs.forEach(p => { p.style.display = ''; });
+        if (sugSection) sugSection.style.display = 'none';
+        $$('.ph-toc a').forEach(a => a.classList.toggle('is-active', a.getAttribute('href') === '#tous'));
+        return;
+      }
+
+      let active = pageProjs.find(p => p.id === targetId);
+      if (!active) active = pageProjs[0];
+
+      // Masquer tous les projets sauf l'actif
+      pageProjs.forEach(p => {
+        p.style.display = (p === active) ? '' : 'none';
+      });
+
+      // Appliquer le thème du projet actif
+      if (active.dataset.theme) {
+        document.body.dataset.theme = active.dataset.theme;
+      }
+
+      // Mettre en valeur le bouton du projet actif dans le sommaire
+      $$('.ph-toc a').forEach(a => {
+        a.classList.toggle('is-active', a.getAttribute('href') === `#${active.id}`);
+      });
+
+      // Mettre à jour les suggestions
+      if (sugSection) {
+        sugSection.style.display = '';
+        renderSuggestions(active);
+      }
+
+      if (window.lenis && typeof window.lenis.resize === 'function') {
+        window.lenis.resize();
+      }
+    }
+
+    function handleHash(scroll = false) {
+      const hash = location.hash.replace('#', '');
+      const valid = pageProjs.some(p => p.id === hash) || hash === 'tous';
+      const targetId = valid ? hash : pageProjs[0].id;
+      showSingleProject(targetId);
+      if (scroll && targetId !== 'tous') {
+        const el = document.getElementById(targetId);
+        if (el) {
+          setTimeout(() => {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 60);
+        }
+      }
+    }
+
+    window.addEventListener('hashchange', () => handleHash(true));
+    handleHash(false);
+
+    // Clic sur un bouton du sommaire du haut
+    $$('.ph-toc a').forEach(a => {
+      a.addEventListener('click', e => {
+        const href = a.getAttribute('href');
+        if (href && href.startsWith('#')) {
+          e.preventDefault();
+          const targetId = href.replace('#', '');
+          history.pushState(null, '', `#${targetId}`);
+          handleHash(true);
+        }
+      });
+    });
+  }
   // lecteur vidéo : lecture automatique quand la vidéo est à l'écran, pause dès qu'on passe à une autre ;
   // boutons « son » et « plein écran »
   // Page Montage (data-son-auto) : la vidéo se lance avec le son, et en passant à la suivante le son suit.

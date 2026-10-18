@@ -741,6 +741,10 @@ body[data-theme="marine"] .sug-card-sub{color:rgba(235,237,255,.88)}
 .has-cursor .play{cursor:none}
 .play span{width:18px;height:22px;margin-left:5px;background:currentColor;clip-path:polygon(0 0,100% 50%,0 100%)}
 .player:hover .play{transform:scale(1.12)}
+.gal-row--video{width:100%;margin:clamp(.5rem,1.5vw,1.2rem) auto}
+.gal-item--video{width:100%;cursor:default !important}
+.gal-item--video .player{width:100%;aspect-ratio:16/9;border-radius:22px;box-shadow:0 40px 90px -40px rgba(15,26,74,.6)}
+body[data-theme="marine"] .gal-item--video .player{box-shadow:0 40px 90px -40px rgba(0,0,0,.85);border:1px solid rgba(255,255,255,.12)}
 .player.playing{cursor:auto}
 .player.playing .play{opacity:0;pointer-events:none;transform:scale(.5)}
 .player.missing::after{content:"Vidéo bientôt disponible";position:absolute;left:50%;bottom:1.2rem;transform:translateX(-50%);padding:.4rem .9rem;border-radius:999px;background:rgba(243,243,253,.9);color:var(--marine);font-size:.85rem;font-weight:600;white-space:nowrap}

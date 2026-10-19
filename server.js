@@ -35,7 +35,7 @@ const server = http.createServer((req, res) => {
 
   // Security: avoid path traversal
   if (!filePath.startsWith(ROOT)) {
-    res.writeHead(403);
+    res.writeHead(403, { 'Content-Type': 'text/plain; charset=utf-8' });
     res.end('Forbidden');
     return;
   }
@@ -53,27 +53,77 @@ const server = http.createServer((req, res) => {
 
     const ext = path.extname(filePath).toLowerCase();
     const contentType = MIME_TYPES[ext] || 'application/octet-stream';
+    const isVideo = ext === '.mp4' || ext === '.mov' || ext === '.webm';
 
-    const range = req.headers.range;
-    if (range && (ext === '.mp4' || ext === '.mov' || ext === '.webm')) {
-      const parts = range.replace(/bytes=/, '').split('-');
-      const start = parseInt(parts[0], 10);
-      const end = parts[1] ? parseInt(parts[1], 10) : stats.size - 1;
-      const chunksize = (end - start) + 1;
-      const fileStream = fs.createReadStream(filePath, { start, end });
-      res.writeHead(206, {
-        'Content-Range': `bytes ${start}-${end}/${stats.size}`,
-        'Accept-Ranges': 'bytes',
-        'Content-Length': chunksize,
-        'Content-Type': contentType
-      });
-      fileStream.pipe(res);
-      return;
+    if (isVideo) {
+      const range = req.headers.range;
+      if (range) {
+        const parts = range.replace(/bytes=/, '').split('-');
+        let start = parseInt(parts[0], 10);
+        let end = parseInt(parts[1], 10);
+
+        if (isNaN(start)) {
+          start = stats.size - end;
+          end = stats.size - 1;
+        } else if (isNaN(end)) {
+          end = stats.size - 1;
+        }
+
+        if (start < 0) start = 0;
+        if (end >= stats.size) end = stats.size - 1;
+
+        if (start > end || start >= stats.size) {
+          res.writeHead(416, {
+            'Content-Range': `bytes */${stats.size}`,
+            'Accept-Ranges': 'bytes'
+          });
+          res.end();
+          return;
+        }
+
+        const chunksize = (end - start) + 1;
+        res.writeHead(206, {
+          'Content-Range': `bytes ${start}-${end}/${stats.size}`,
+          'Accept-Ranges': 'bytes',
+          'Content-Length': chunksize,
+          'Content-Type': contentType,
+          'Cache-Control': 'no-cache'
+        });
+
+        if (req.method === 'HEAD') {
+          res.end();
+          return;
+        }
+
+        const fileStream = fs.createReadStream(filePath, { start, end });
+        fileStream.on('error', () => {});
+        res.on('close', () => fileStream.destroy());
+        fileStream.pipe(res);
+        return;
+      } else {
+        res.writeHead(200, {
+          'Content-Length': stats.size,
+          'Content-Type': contentType,
+          'Accept-Ranges': 'bytes',
+          'Cache-Control': 'no-cache'
+        });
+
+        if (req.method === 'HEAD') {
+          res.end();
+          return;
+        }
+
+        const fileStream = fs.createReadStream(filePath);
+        fileStream.on('error', () => {});
+        res.on('close', () => fileStream.destroy());
+        fileStream.pipe(res);
+        return;
+      }
     }
 
     fs.readFile(filePath, (readErr, content) => {
       if (readErr) {
-        res.writeHead(500);
+        res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
         res.end(`Erreur serveur: ${readErr.code}`);
       } else {
         res.writeHead(200, {
@@ -84,6 +134,10 @@ const server = http.createServer((req, res) => {
           'Pragma': 'no-cache',
           'Expires': '0'
         });
+        if (req.method === 'HEAD') {
+          res.end();
+          return;
+        }
         res.end(content);
       }
     });

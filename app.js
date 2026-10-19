@@ -698,18 +698,21 @@ void main(){
     document.body.appendChild(lb);
   }
 
-  // Structure HTML interne de la visionneuse
+  // Structure HTML interne de la visionneuse avec support complet du swipe
   lb.innerHTML = `
     <div class="lb-header">
       <div class="lb-meta">
         <div class="lb-meta-row">
           <span class="lb-badge">✦ Galerie</span>
           <h2 class="lb-title"></h2>
+          <a class="lb-project-link" href="#" style="display:none">
+            <span>Découvrir le projet →</span>
+          </a>
         </div>
         <p class="lb-caption"></p>
       </div>
       <div class="lb-actions">
-        <button type="button" class="lb-btn lb-zoom" aria-label="Agrandir / Réduire le visuel" title="Zoomer (Z)">⤢</button>
+        <button type="button" class="lb-btn lb-zoom" aria-label="Agrandir / Réduire le visuel (Z)" title="Zoomer (Z)">⤢</button>
         <button type="button" class="lb-btn lb-close" aria-label="Fermer la galerie (Échap)" title="Fermer (Échap)">
           <span class="lb-close-icon" aria-hidden="true">✕</span>
           <span class="lb-close-text">Fermer</span>
@@ -719,23 +722,27 @@ void main(){
     <div class="lb-stage">
       <button type="button" class="lb-prev" aria-label="Visuel précédent (←)" title="Précédent (←)">‹</button>
       <div class="lb-media-wrap">
-        <img class="lb-img" alt="" src="" style="display:none">
+        <img class="lb-img" alt="" src="" style="display:none" draggable="false">
         <video class="lb-video" controls playsinline loop style="display:none"></video>
       </div>
       <button type="button" class="lb-next" aria-label="Visuel suivant (→)" title="Suivant (→)">›</button>
+      <div class="lb-swipe-indicator">
+        <span>‹ Glisser pour faire défiler les visuels ›</span>
+      </div>
     </div>
     <div class="lb-footer">
       <div class="lb-count-pill">
         <span class="lb-current">1</span> / <span class="lb-total">1</span>
       </div>
       <div class="lb-thumbs" aria-label="Vignettes de la galerie"></div>
-      <span class="lb-hint">Naviguer avec ← / → · Fermer avec Échap</span>
+      <span class="lb-hint">Naviguer avec ← / → ou glisser · Fermer avec Échap</span>
     </div>
   `;
 
   const lbImg = $('.lb-img', lb);
   const lbVideo = $('.lb-video', lb);
   const lbWrap = $('.lb-media-wrap', lb);
+  const lbStage = $('.lb-stage', lb);
   const lbTitle = $('.lb-title', lb);
   const lbCaption = $('.lb-caption', lb);
   const lbCur = $('.lb-current', lb);
@@ -743,25 +750,34 @@ void main(){
   const lbThumbs = $('.lb-thumbs', lb);
   const lbZoom = $('.lb-zoom', lb);
   const lbCloseBtn = $('.lb-close', lb);
+  const lbProjectLink = $('.lb-project-link', lb);
+  const lbSwipeInd = $('.lb-swipe-indicator', lb);
 
   let galleryList = [];
   let currentIdx = 0;
   let previousFocus = null;
+  let isNavigating = false;
 
   const renderThumbs = () => {
     if (!lbThumbs) return;
     lbThumbs.innerHTML = '';
-    if (galleryList.length <= 1) return;
+    if (galleryList.length <= 1) {
+      lbThumbs.style.display = 'none';
+      if (lbSwipeInd) lbSwipeInd.style.display = 'none';
+      return;
+    }
+    lbThumbs.style.display = '';
+    if (lbSwipeInd) lbSwipeInd.style.display = '';
     galleryList.forEach((item, idx) => {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = `lb-thumb ${idx === currentIdx ? 'is-active' : ''}`;
       btn.setAttribute('aria-label', `Voir visuel ${idx + 1} sur ${galleryList.length}`);
       const thumbSrc = item.thumb || item.src;
-      btn.innerHTML = `<img src="${thumbSrc}" alt="">`;
+      btn.innerHTML = `<img src="${thumbSrc}" alt="" draggable="false">`;
       btn.addEventListener('click', e => {
         e.stopPropagation();
-        showItem(idx);
+        navigateToItem(idx);
       });
       lbThumbs.appendChild(btn);
     });
@@ -778,12 +794,22 @@ void main(){
     lbCur.textContent = String(currentIdx + 1);
     lbTot.textContent = String(galleryList.length);
 
+    if (item.projectUrl) {
+      lbProjectLink.href = item.projectUrl;
+      lbProjectLink.style.display = 'inline-flex';
+    } else {
+      lbProjectLink.style.display = 'none';
+    }
+
     if (item.type === 'video') {
       lbImg.style.display = 'none';
       lbImg.src = '';
       lbVideo.style.display = 'block';
+      lbVideo.muted = true;
+      lbVideo.playsInline = true;
       lbVideo.src = item.src;
       if (item.poster) lbVideo.poster = item.poster;
+      lbVideo.load();
       const p = lbVideo.play();
       if (p) p.catch(() => {});
     } else {
@@ -793,7 +819,6 @@ void main(){
         lbVideo.src = '';
       }
       lbImg.style.display = 'block';
-      lbImg.style.opacity = '';
       lbImg.src = item.src;
       lbImg.alt = item.caption || item.projectTitle || '';
     }
@@ -804,6 +829,133 @@ void main(){
       if (isAct) th.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
     });
   };
+
+  const navigateToItem = (newIdx, dir = null) => {
+    if (!galleryList.length || isNavigating) return;
+    if (newIdx === currentIdx && dir === null) return;
+    if (galleryList.length === 1) return;
+
+    const direction = dir || (newIdx > currentIdx ? 'next' : 'prev');
+    isNavigating = true;
+
+    const outOffset = direction === 'next' ? -80 : 80;
+    const inOffset = direction === 'next' ? 80 : -80;
+
+    lbWrap.style.transition = 'transform .18s ease-in, opacity .18s ease-in';
+    lbWrap.style.transform = `translate3d(${outOffset}px, 0, 0)`;
+    lbWrap.style.opacity = '0.2';
+
+    setTimeout(() => {
+      showItem(newIdx);
+      lbWrap.style.transition = 'none';
+      lbWrap.style.transform = `translate3d(${inOffset}px, 0, 0)`;
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          lbWrap.style.transition = 'transform .28s cubic-bezier(0.16, 1, 0.3, 1), opacity .28s ease';
+          lbWrap.style.transform = 'translate3d(0, 0, 0)';
+          lbWrap.style.opacity = '1';
+          setTimeout(() => {
+            isNavigating = false;
+            lbWrap.style.transition = '';
+          }, 280);
+        });
+      });
+    }, 180);
+  };
+
+  /* --- Gestion du glisser / swiper tactile et souris ultra-fluide --- */
+  let isPointerDown = false;
+  let startX = 0;
+  let startY = 0;
+  let currentX = 0;
+  let startTime = 0;
+  let isHorizontalDrag = false;
+
+  const handlePointerDown = e => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    if (e.target.closest('.lb-prev, .lb-next, .lb-close, .lb-zoom, .lb-project-link, .lb-thumb, video, a, button')) return;
+    if (lbWrap.classList.contains('is-zoomed')) return;
+
+    isPointerDown = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    currentX = e.clientX;
+    startTime = Date.now();
+    isHorizontalDrag = false;
+    lbWrap.classList.add('is-dragging');
+  };
+
+  const handlePointerMove = e => {
+    if (!isPointerDown) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+
+    if (!isHorizontalDrag) {
+      if (Math.abs(dx) > 6 || Math.abs(dy) > 6) {
+        if (Math.abs(dx) > Math.abs(dy)) {
+          isHorizontalDrag = true;
+        } else {
+          isPointerDown = false;
+          lbWrap.classList.remove('is-dragging');
+          lbWrap.style.transform = '';
+          return;
+        }
+      } else {
+        return;
+      }
+    }
+
+    currentX = e.clientX;
+    let dragDistance = dx;
+    if (galleryList.length <= 1) dragDistance = dx * 0.2;
+    lbWrap.style.transform = `translate3d(${dragDistance}px, 0, 0)`;
+    lbWrap.style.opacity = String(Math.max(0.4, 1 - Math.abs(dx) / 900));
+  };
+
+  const handlePointerUp = () => {
+    if (!isPointerDown) return;
+    isPointerDown = false;
+    lbWrap.classList.remove('is-dragging');
+
+    const dx = currentX - startX;
+    const dt = Date.now() - startTime;
+    const velocity = Math.abs(dx) / (dt || 1);
+
+    if (isHorizontalDrag && galleryList.length > 1 && (Math.abs(dx) > 45 || velocity > 0.3)) {
+      if (dx < 0) {
+        navigateToItem(currentIdx + 1, 'next');
+      } else {
+        navigateToItem(currentIdx - 1, 'prev');
+      }
+    } else {
+      lbWrap.style.transition = 'transform .28s cubic-bezier(0.16, 1, 0.3, 1), opacity .28s ease';
+      lbWrap.style.transform = 'translate3d(0, 0, 0)';
+      lbWrap.style.opacity = '1';
+      setTimeout(() => { lbWrap.style.transition = ''; }, 280);
+    }
+  };
+
+  lbStage.addEventListener('pointerdown', handlePointerDown);
+  addEventListener('pointermove', handlePointerMove);
+  addEventListener('pointerup', handlePointerUp);
+  addEventListener('pointercancel', handlePointerUp);
+
+  // Événements Touch directs (compatibilité Safari iOS & Android)
+  lbStage.addEventListener('touchstart', e => {
+    if (e.touches && e.touches[0]) {
+      handlePointerDown({ clientX: e.touches[0].clientX, clientY: e.touches[0].clientY, target: e.target, pointerType: 'touch' });
+    }
+  }, { passive: true });
+
+  lbStage.addEventListener('touchmove', e => {
+    if (isPointerDown && e.touches && e.touches[0]) {
+      handlePointerMove({ clientX: e.touches[0].clientX, clientY: e.touches[0].clientY });
+      if (isHorizontalDrag && e.cancelable) e.preventDefault();
+    }
+  }, { passive: false });
+
+  lbStage.addEventListener('touchend', handlePointerUp, { passive: true });
 
   let lastOpenTime = 0;
 
@@ -820,10 +972,14 @@ void main(){
     lbCloseBtn.focus({ preventScroll: true });
   };
 
+  window.openProjectGallery = openGallery;
+
   const closeGallery = () => {
     if (!lb.classList.contains('open')) return;
     lb.classList.remove('open');
     lbWrap.classList.remove('is-zoomed');
+    lbWrap.style.transform = '';
+    lbWrap.style.opacity = '';
     if (lbImg) {
       lbImg.style.display = 'none';
       lbImg.src = '';
@@ -843,18 +999,18 @@ void main(){
   };
 
   lb.addEventListener('click', e => {
-    if (Date.now() - lastOpenTime < 280) return; // Eviter fermeture instantanee sur le clic d'ouverture
+    if (Date.now() - lastOpenTime < 280) return;
     if (e.target.closest('.lb-close')) {
       closeGallery();
     } else if (e.target.closest('.lb-prev')) {
-      showItem(currentIdx - 1);
+      navigateToItem(currentIdx - 1, 'prev');
       if (Sound && Sound.click) Sound.click();
     } else if (e.target.closest('.lb-next')) {
-      showItem(currentIdx + 1);
+      navigateToItem(currentIdx + 1, 'next');
       if (Sound && Sound.click) Sound.click();
     } else if (e.target.closest('.lb-zoom')) {
       toggleZoom();
-    } else if (e.target === lbImg) {
+    } else if (e.target === lbImg && !isPointerDown && !isHorizontalDrag) {
       toggleZoom();
     } else if (!e.target.closest('.lb-header') && !e.target.closest('.lb-footer') && (e.target === lb || e.target.classList.contains('lb-stage'))) {
       closeGallery();
@@ -866,161 +1022,56 @@ void main(){
     if (e.key === 'Escape') {
       closeGallery();
     } else if (e.key === 'ArrowLeft') {
-      showItem(currentIdx - 1);
+      navigateToItem(currentIdx - 1, 'prev');
     } else if (e.key === 'ArrowRight') {
-      showItem(currentIdx + 1);
+      navigateToItem(currentIdx + 1, 'next');
     } else if (e.key === 'z' || e.key === 'Z') {
       toggleZoom();
     }
   });
 
-  let touchStartX = 0, touchStartY = 0;
-  lb.addEventListener('touchstart', e => {
-    if (e.touches && e.touches[0]) {
-      touchStartX = e.touches[0].clientX;
-      touchStartY = e.touches[0].clientY;
-    }
-  }, { passive: true });
-
-  lb.addEventListener('touchend', e => {
-    if (e.changedTouches && e.changedTouches[0]) {
-      const deltaX = e.changedTouches[0].clientX - touchStartX;
-      const deltaY = e.changedTouches[0].clientY - touchStartY;
-      if (Math.abs(deltaX) > 45 && Math.abs(deltaX) > Math.abs(deltaY) * 1.4) {
-        if (deltaX < 0) showItem(currentIdx + 1);
-        else showItem(currentIdx - 1);
+  function extractMediaFromFigure(fig, projectTitle) {
+    const v = $('video', fig);
+    const im = $('img', fig);
+    if (v) {
+      const vSrc = v.currentSrc || $('source', v)?.src || v.src;
+      if (vSrc) {
+        return {
+          type: 'video',
+          src: vSrc,
+          poster: v.poster || (im ? (im.dataset.full || im.currentSrc || im.src) : ''),
+          thumb: v.poster || (im ? (im.dataset.full || im.currentSrc || im.src) : ''),
+          projectTitle,
+          caption: `${projectTitle} · Vidéo Motion / Animation`,
+          fig
+        };
+      }
+    } else if (im) {
+      const imSrc = im.dataset.full || im.currentSrc || im.src;
+      if (imSrc) {
+        return {
+          type: 'image',
+          src: imSrc,
+          thumb: imSrc,
+          projectTitle,
+          caption: im.alt || `${projectTitle} · Visuel`,
+          fig
+        };
       }
     }
-  }, { passive: true });
+    return null;
+  }
 
   const bindGalleryTriggers = () => {
-    const projects = $$('article.proj');
-    if (projects.length) {
-      projects.forEach(proj => {
-        const titleEl = proj.querySelector('.proj-title') || proj.querySelector('h2');
-        const projTitle = titleEl ? titleEl.textContent.trim() : 'Projet';
-
-        const visualFigures = $$('.gal-item, .gal-item--video, .poster, .anim, figure', proj)
-          .filter(f => !f.closest('[data-clone]') && !!($('img', f) || $('video', f)));
-
-        const projectItems = [];
-        visualFigures.forEach(fig => {
-          const v = $('video', fig);
-          const im = $('img', fig);
-          if (v) {
-            const vSrc = v.currentSrc || $('source', v)?.src || v.src;
-            if (vSrc) {
-              projectItems.push({
-                type: 'video',
-                src: vSrc,
-                poster: v.poster || (im ? im.src : ''),
-                thumb: v.poster || (im ? im.src : ''),
-                projectTitle,
-                caption: `${projTitle} · Vidéo Motion / Animation`,
-                fig
-              });
-            }
-          } else if (im) {
-            const imSrc = im.dataset.full || im.currentSrc || im.src;
-            if (imSrc) {
-              projectItems.push({
-                type: 'image',
-                src: imSrc,
-                thumb: imSrc,
-                projectTitle,
-                caption: im.alt || `${projTitle} · Visuel`,
-                fig
-              });
-            }
-          }
-        });
-
-        projectItems.forEach((item, itemIdx) => {
-          const fig = item.fig;
-          if (!fig) return;
-          const isVideoFigure = !!fig.querySelector('.player, video');
-
-          fig.tabIndex = 0;
-          fig.setAttribute('role', 'button');
-          if (!isVideoFigure) {
-            fig.setAttribute('data-cursor', 'Agrandir');
-          }
-          fig.setAttribute('aria-label', `Ouvrir dans la galerie : ${item.caption}`);
-
-          const clickHandler = e => {
-            if (e.target.closest('.player-ui, .pl-sound, .pl-seek, .pl-play, .play')) return;
-            if (isVideoFigure && e.target.closest('.player, video')) return;
-            e.preventDefault();
-            e.stopPropagation();
-            openGallery(projectItems, itemIdx);
-          };
-
-          fig.addEventListener('click', clickHandler);
-          fig.addEventListener('keydown', e => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              if (isVideoFigure && e.target.closest('.player, video')) return;
-              e.preventDefault();
-              openGallery(projectItems, itemIdx);
-            }
-          });
-        });
-      });
-    }
-
-    $$('.drag-track, [data-lightbox]').forEach(track => {
-      if (track.closest('article.proj')) return;
-      const trackImgs = $$('img', track).filter(x => !x.closest('[data-clone]'));
-      if (!trackImgs.length) return;
-      const trackItems = trackImgs.map(im => ({
-        type: 'image',
-        src: im.dataset.full || im.currentSrc || im.src,
-        thumb: im.dataset.full || im.currentSrc || im.src,
-        projectTitle: document.title.split('·')[0].trim() || 'Création',
-        caption: im.alt || 'Visuel artistique'
-      }));
-
-      trackImgs.forEach((im, idx) => {
-        const fig = im.closest('figure') || im;
-        fig.tabIndex = 0;
-        fig.setAttribute('role', 'button');
-        fig.setAttribute('data-cursor', 'Agrandir');
-        fig.setAttribute('aria-label', `Agrandir : ${im.alt}`);
-        const handler = e => {
-          e.preventDefault();
-          openGallery(trackItems, idx);
-        };
-        fig.addEventListener('click', handler);
-        fig.addEventListener('keydown', e => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            openGallery(trackItems, idx);
-          }
-        });
-      });
-    });
-
-    $$('.ph-visual .cover').forEach(cov => {
-      const im = $('img', cov);
-      if (!im) return;
-      cov.tabIndex = 0;
-      cov.setAttribute('role', 'button');
-      cov.setAttribute('data-cursor', 'Agrandir');
-      cov.setAttribute('aria-label', `Agrandir la couverture : ${im.alt}`);
-      const covHandler = e => {
-        e.preventDefault();
-        openGallery([{
-          type: 'image',
-          src: im.dataset.full || im.currentSrc || im.src,
-          thumb: im.dataset.full || im.currentSrc || im.src,
-          projectTitle: $('h1')?.textContent.trim() || 'Projet',
-          caption: im.alt || 'Visuel de présentation'
-        }], 0);
-      };
-      cov.addEventListener('click', covHandler);
-      cov.addEventListener('keydown', e => {
+    $$('.gal-item:not(.gal-item--video), [data-lightbox] figure:not(.gal-item--video), .proj-media figure:not(.gal-item--video), .ph-visual .cover, .drag-track figure').forEach(el => {
+      el.tabIndex = 0;
+      el.setAttribute('role', 'button');
+      el.setAttribute('data-cursor', 'Agrandir');
+      el.setAttribute('aria-label', 'Agrandir le visuel du projet');
+      el.addEventListener('keydown', e => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          covHandler(e);
+          el.click();
         }
       });
     });
@@ -1028,84 +1079,118 @@ void main(){
 
   bindGalleryTriggers();
 
-  // Delegation globale infaillible pour agrandir tous les visuels et projets au clic
+  // Délégation globale sur les visuels des pages projets
   document.addEventListener('click', e => {
-    // Si la visionneuse est ouverte, ne pas reimporter
     if (lb && lb.classList.contains('open')) return;
+    // Les clics sur les cartes réalisations mènent à la page projet (ne pas intercepter)
+    if (e.target.closest('.card, .card-pill, .track, .player, .gal-item--video, .player-ui, .pl-sound, .pl-seek, .pl-play, .play, video, .vfull-sound, .vfull button, .loop')) return;
 
-    // Ne pas intercepter les controles video, sons ou liens
-    if (e.target.closest('.player-ui, .pl-sound, .pl-seek, .pl-play, .play, video, a, button')) return;
+    // 2. Visuels dans la galerie d'un projet (.gal-item, .gal-media, .proj-media figure, etc.)
+    const galVisual = e.target.closest('.gal-item, .gal-media, .proj-media figure, [data-lightbox] figure, .poster, .anim');
+    if (galVisual) {
+      const proj = galVisual.closest('article.proj') || galVisual.closest('section.projects') || galVisual.closest('.proj-media') || document;
+      const titleEl = proj.querySelector?.('.proj-title') || proj.querySelector?.('h2') || $('h1');
+      const projTitle = titleEl ? titleEl.textContent.trim() : document.title.split('·')[0].trim();
 
-    // Detecter tout element visuel d'un projet
-    const visual = e.target.closest('.gal-item, .gal-media, .proj-media figure, .ph-visual .cover, [data-lightbox] figure, .poster, .anim');
-    if (!visual) return;
-
-    // Cas 1 : Couverture en en-tete de page de projet (.ph-visual .cover)
-    if (visual.closest('.ph-visual')) {
-      const im = $('img', visual.closest('.cover') || visual);
-      if (!im) return;
-      e.preventDefault();
-      e.stopPropagation();
-      openGallery([{
-        type: 'image',
-        src: im.dataset.full || im.currentSrc || im.src,
-        thumb: im.dataset.full || im.currentSrc || im.src,
-        projectTitle: $('h1')?.textContent.trim() || document.title.split('·')[0].trim() || 'Projet',
-        caption: im.alt || 'Visuel de présentation'
-      }], 0);
-      return;
-    }
-
-    // Cas 2 : Visuel dans la galerie d'un projet
-    const proj = visual.closest('article.proj') || visual.closest('section.projects') || visual.closest('.proj-media') || document;
-    const figs = $$('.gal-item, .proj-media figure, [data-lightbox] figure, .poster, .anim', proj)
-      .filter(f => !f.closest('[data-clone]') && !!($('img', f) || $('video', f)));
-
-    if (!figs.length) return;
-
-    const titleEl = proj.querySelector?.('.proj-title') || proj.querySelector?.('h2') || $('h1');
-    const projTitle = titleEl ? titleEl.textContent.trim() : document.title.split('·')[0].trim();
-
-    const items = [];
-    figs.forEach(f => {
-      const v = $('video', f);
-      const im = $('img', f);
-      if (v) {
-        const vSrc = v.currentSrc || $('source', v)?.src || v.src;
-        if (vSrc) {
-          items.push({
-            type: 'video',
-            src: vSrc,
-            poster: v.poster || (im ? im.src : ''),
-            thumb: v.poster || (im ? im.src : ''),
-            projectTitle: projTitle,
-            caption: `${projTitle} · Vidéo Motion / Animation`,
-            fig: f
-          });
-        }
-      } else if (im) {
-        const imSrc = im.dataset.full || im.currentSrc || im.src;
-        if (imSrc) {
+      const items = [];
+      // Inclure la couverture du hero si présente
+      const coverImg = $('.ph-visual .cover img, .p-hero .cover img');
+      if (coverImg) {
+        const cSrc = coverImg.dataset.full || coverImg.currentSrc || coverImg.src;
+        if (cSrc) {
           items.push({
             type: 'image',
-            src: imSrc,
-            thumb: imSrc,
+            src: cSrc,
+            thumb: cSrc,
             projectTitle: projTitle,
-            caption: im.alt || `${projTitle} · Visuel`,
-            fig: f
+            caption: coverImg.alt || `${projTitle} · Couverture principale`,
+            fig: coverImg.closest('figure') || coverImg
           });
         }
       }
-    });
 
-    const targetFig = visual.closest('figure') || visual;
-    let clickedIdx = items.findIndex(it => it.fig === targetFig || it.fig?.contains(targetFig) || targetFig.contains(it.fig));
-    if (clickedIdx < 0) clickedIdx = 0;
+      const figs = $$('.gal-item, .proj-media figure, [data-lightbox] figure, .poster, .anim', proj)
+        .filter(f => !f.closest('[data-clone]'));
 
-    e.preventDefault();
-    e.stopPropagation();
-    openGallery(items, clickedIdx);
-  });
+      figs.forEach(f => {
+        const mediaItem = extractMediaFromFigure(f, projTitle);
+        if (mediaItem && !items.some(it => it.src === mediaItem.src)) {
+          items.push(mediaItem);
+        }
+      });
+
+      if (items.length) {
+        e.preventDefault();
+        e.stopPropagation();
+        const targetFig = galVisual.closest('figure') || galVisual;
+        let clickedIdx = items.findIndex(it => it.fig === targetFig || it.fig?.contains(targetFig) || targetFig.contains(it.fig));
+        if (clickedIdx < 0) clickedIdx = 0;
+        openGallery(items, clickedIdx);
+        return;
+      }
+    }
+
+    // 3. Couverture de présentation en haut de page (.ph-visual .cover, .cover img)
+    const coverVisual = e.target.closest('.ph-visual .cover, .ph-visual img, .p-hero .cover');
+    if (coverVisual) {
+      const covImg = $('img', coverVisual) || (coverVisual.tagName === 'IMG' ? coverVisual : null);
+      if (covImg) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const projTitle = $('h1')?.textContent.trim() || document.title.split('·')[0].trim() || 'Projet';
+        const items = [];
+        const cSrc = covImg.dataset.full || covImg.currentSrc || covImg.src;
+        if (cSrc) {
+          items.push({
+            type: 'image',
+            src: cSrc,
+            thumb: cSrc,
+            projectTitle: projTitle,
+            caption: covImg.alt || `${projTitle} · Couverture principale`,
+            fig: covImg.closest('figure') || covImg
+          });
+        }
+
+        // Ajouter tous les visuels du projet actif
+        const activeProj = $('.proj:not([style*="display: none"])') || $('article.proj') || document;
+        const figs = $$('.gal-item, .proj-media figure, [data-lightbox] figure, .poster, .anim', activeProj)
+          .filter(f => !f.closest('[data-clone]'));
+
+        figs.forEach(f => {
+          const mediaItem = extractMediaFromFigure(f, projTitle);
+          if (mediaItem && !items.some(it => it.src === mediaItem.src)) {
+            items.push(mediaItem);
+          }
+        });
+
+        openGallery(items, 0);
+        return;
+      }
+    }
+
+    // 4. Pistes défilantes (page passions)
+    const dragFig = e.target.closest('.drag-track figure');
+    if (dragFig) {
+      const track = dragFig.closest('.drag-track');
+      const trackImgs = $$('img', track).filter(x => !x.closest('[data-clone]'));
+      if (trackImgs.length) {
+        e.preventDefault();
+        e.stopPropagation();
+        const trackItems = trackImgs.map(im => ({
+          type: 'image',
+          src: im.dataset.full || im.currentSrc || im.src,
+          thumb: im.dataset.full || im.currentSrc || im.src,
+          projectTitle: document.title.split('·')[0].trim() || 'Création',
+          caption: im.alt || 'Visuel artistique'
+        }));
+        const clickedImg = $('img', dragFig);
+        const idx = trackImgs.indexOf(clickedImg);
+        openGallery(trackItems, idx >= 0 ? idx : 0);
+        return;
+      }
+    }
+  }, true);
 
   /* ---------- 13. Vidéos : lecture quand elles sont visibles ---------- */
   const vIO = new IntersectionObserver(entries => entries.forEach(e => {
@@ -1551,19 +1636,23 @@ void main(){
   function startPlayer(p) {
     const v = $('video', p);
     if (!v) return;
+    if (!v.src && !v.currentSrc) {
+      const s = $('source', v);
+      if (s && s.src) v.src = s.src;
+    }
     players.forEach(o => { if (o !== p) { const ov = $('video', o); if (ov) { ov.pause(); if (autoSound) ov.muted = true; blocked(o, false); } } });
     current = p; p.classList.remove('user-paused'); p.retries = 0;
     if (autoSound && wantSound && hasSound(p)) {
       v.muted = false;
       const pr = v.play();
-      if (pr) pr.then(() => blocked(p, false)).catch(err => {
+      if (pr) pr.then(() => { blocked(p, false); p.classList.add('playing', 'is-playing'); }).catch(err => {
         if (!err || err.name !== 'NotAllowedError') return;
-        v.muted = true; blocked(p, true);   // son refusé par le navigateur : on joue sans le son
-        const p2 = v.play(); if (p2) p2.catch(() => {});
+        v.muted = true; blocked(p, true);
+        const p2 = v.play(); if (p2) p2.then(() => p.classList.add('playing', 'is-playing')).catch(() => {});
       });
     } else {
       v.muted = true;
-      const pr = v.play(); if (pr) pr.catch(() => {});
+      const pr = v.play(); if (pr) pr.then(() => p.classList.add('playing', 'is-playing')).catch(() => {});
     }
   }
   // Seuil souple pour démarrer à l'écran et ne couper que quand la vidéo quitte réellement la vue
@@ -1599,6 +1688,11 @@ void main(){
       const isPaused = v.paused;
       p.classList.toggle('playing', !isPaused);
       p.classList.toggle('is-playing', !isPaused);
+      if (centerPlay) {
+        centerPlay.style.opacity = isPaused ? '1' : '0';
+        centerPlay.style.pointerEvents = isPaused ? 'auto' : 'none';
+        centerPlay.style.transform = isPaused ? 'scale(1)' : 'scale(0.5)';
+      }
       if (playBtn) playBtn.setAttribute('aria-label', isPaused ? 'Lire la vidéo' : 'Mettre en pause');
     };
 
@@ -1610,32 +1704,50 @@ void main(){
       p.classList.toggle('sound-on', !v.muted);
     };
 
-    const togglePlay = () => {
-      if (v.paused) {
-        p.classList.remove('user-paused');
-        players.forEach(o => {
-          if (o !== p) {
-            const ov = $('video', o);
-            if (ov) ov.pause();
-            o.classList.remove('playing', 'is-playing');
-          }
-        });
-        const pr = v.play();
-        if (pr) {
-          pr.then(() => {
-            syncState();
-          }).catch(err => {
-            console.warn('Lecture vidéo avec son bloquée par le navigateur, tentative en muet :', err);
-            v.muted = true;
-            syncSound();
-            v.play().then(syncState).catch(() => {});
-          });
+    const playVideo = () => {
+      p.classList.remove('user-paused');
+      players.forEach(o => {
+        if (o !== p) {
+          const ov = $('video', o);
+          if (ov) ov.pause();
+          o.classList.remove('playing', 'is-playing');
         }
-      } else {
-        p.classList.add('user-paused');
-        v.pause();
-        syncState();
+      });
+      if (!v.src && !v.currentSrc) {
+        const s = $('source', v);
+        if (s && s.src) v.src = s.src;
       }
+      if (v.readyState === 0) {
+        try { v.load(); } catch (_) {}
+      }
+      if (!p.classList.contains('sound-on')) {
+        v.muted = true;
+      }
+      const pr = v.play();
+      if (pr) {
+        pr.then(() => {
+          syncState();
+        }).catch(err => {
+          console.warn('Lecture avec son bloquée par le navigateur, bascule en muet :', err);
+          v.muted = true;
+          syncSound();
+          v.play().then(syncState).catch(e2 => {
+            console.error('Échec de la lecture vidéo :', e2);
+          });
+        });
+      }
+      syncState();
+    };
+
+    const pauseVideo = () => {
+      p.classList.add('user-paused');
+      v.pause();
+      syncState();
+    };
+
+    const togglePlay = () => {
+      if (v.paused) playVideo();
+      else pauseVideo();
     };
 
     const toggleSound = () => {
@@ -1656,13 +1768,37 @@ void main(){
       }
     };
 
-    // Le clic sur le bouton central, sur la vidéo ou sur le bouton de barre lance / met en pause
-    if (centerPlay) centerPlay.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); togglePlay(); });
-    v.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); togglePlay(); });
-    if (playBtn) playBtn.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); togglePlay(); });
+    // Clic sur le bouton de lecture central : lance TOUJOURS la lecture
+    if (centerPlay) {
+      centerPlay.addEventListener('click', e => {
+        e.preventDefault();
+        e.stopPropagation();
+        playVideo();
+      });
+    }
+
+    // Clic sur la vidéo ou sur le conteneur du lecteur : bascule lecture / pause
+    p.addEventListener('click', e => {
+      if (e.target.closest('.pl-sound, .pl-full, .pl-seek, .loop-tag')) return;
+      e.preventDefault();
+      e.stopPropagation();
+      togglePlay();
+    });
+
+    if (playBtn) {
+      playBtn.addEventListener('click', e => {
+        e.preventDefault();
+        e.stopPropagation();
+        togglePlay();
+      });
+    }
 
     if (snd) {
-      snd.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); toggleSound(); });
+      snd.addEventListener('click', e => {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleSound();
+      });
     }
 
     v.addEventListener('play', syncState);

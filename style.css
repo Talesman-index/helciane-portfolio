@@ -869,7 +869,7 @@ body[data-theme="marine"] .gal-item--video .player{box-shadow:0 40px 90px -40px 
 .anim-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(1rem,2.4vw,2rem);width:100%;max-width:58rem;margin-inline:auto}
 .anim-title{margin-top:clamp(1.5rem,4vw,3.5rem);font-family:var(--f-title);font-weight:700;font-size:clamp(1.4rem,2.6vw,2.2rem);line-height:1.1;letter-spacing:-.03em;text-align:center}
 .anim-title::after{content:"";display:block;width:2.6rem;height:3px;margin:.8rem auto 0;border-radius:3px;background:var(--rose)}
-.loop-tag{position:absolute;left:.8rem;top:.8rem;display:flex;align-items:center;gap:.45rem;padding:.3rem .8rem;border-radius:999px;background:rgba(243,243,253,.88);color:var(--marine);font-size:.8rem;font-weight:600}
+.loop-tag{position:absolute;left:.8rem;top:.8rem;display:flex;align-items:center;gap:.45rem;padding:.3rem .8rem;border-radius:999px;background:rgba(243,243,253,.88);color:var(--marine);font-size:.8rem;font-weight:600;pointer-events:none;z-index:2}
 .loop-tag i{width:7px;height:7px;border-radius:50%;background:var(--rose);animation:blink 1.4s ease-in-out infinite}
 @keyframes blink{50%{opacity:.25}}
 /* Site internet : navigateur + téléphone, la page défile au survol */
@@ -1074,12 +1074,17 @@ body[data-theme="marine"] .gal-item--video .player{box-shadow:0 40px 90px -40px 
 .gal-item,
 [data-lightbox] figure,
 .gal-media,
+.gal-media img,
+.proj-media figure,
 .poster,
 .anim,
 .drag-track figure,
-.ph-visual .cover {
-  cursor: zoom-in;
+.ph-visual .cover,
+.card .media,
+.card .media img {
+  cursor: zoom-in !important;
 }
+
 
 .gal-media img,
 .poster img,
@@ -1127,9 +1132,9 @@ body[data-theme="marine"] .gal-item--video .player{box-shadow:0 40px 90px -40px 
   position: fixed;
   inset: 0;
   z-index: 99999;
-  background: rgba(10, 18, 14, 0.94);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
+  background: rgba(8, 14, 11, 0.96);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -1196,6 +1201,29 @@ body[data-theme="marine"] .gal-item--video .player{box-shadow:0 40px 90px -40px 
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.lb-project-link {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  padding: .32rem .85rem;
+  border-radius: 999px;
+  background: var(--rose);
+  color: var(--marine) !important;
+  font-family: var(--f-text);
+  font-size: .78rem;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform .22s var(--ease), background .22s ease, box-shadow .22s ease;
+  box-shadow: 0 4px 14px rgba(255, 126, 179, .35);
+}
+
+.lb-project-link:hover {
+  background: #fff;
+  transform: scale(1.05);
+  box-shadow: 0 6px 18px rgba(255, 255, 255, .3);
 }
 
 .lb-caption {
@@ -1274,6 +1302,8 @@ body[data-theme="marine"] .gal-item--video .player{box-shadow:0 40px 90px -40px 
   max-width: 1400px;
   margin: .5rem auto;
   overflow: hidden;
+  touch-action: pan-y;
+  user-select: none;
 }
 
 .lb-media-wrap {
@@ -1286,7 +1316,42 @@ body[data-theme="marine"] .gal-item--video .player{box-shadow:0 40px 90px -40px 
   height: 100%;
   width: 100%;
   min-height: 0;
-  transition: transform .35s cubic-bezier(0.16, 1, 0.3, 1);
+  touch-action: none;
+  cursor: grab;
+  will-change: transform, opacity;
+  transition: transform .32s cubic-bezier(0.16, 1, 0.3, 1), opacity .32s ease;
+}
+
+.lb-media-wrap.is-dragging {
+  cursor: grabbing !important;
+  transition: none !important;
+}
+
+.lb-swipe-indicator {
+  position: absolute;
+  bottom: 1.2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  pointer-events: none;
+  padding: .38rem 1rem;
+  border-radius: 999px;
+  background: rgba(15, 26, 74, .7);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, .15);
+  color: var(--pervenche);
+  font-family: var(--f-text);
+  font-size: .78rem;
+  font-weight: 500;
+  letter-spacing: .02em;
+  opacity: .85;
+  transition: opacity .3s ease;
+}
+
+.lb-media-wrap.is-dragging ~ .lb-swipe-indicator,
+.lb-media-wrap.is-zoomed ~ .lb-swipe-indicator {
+  opacity: 0;
 }
 
 .lb-img,

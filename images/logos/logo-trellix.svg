@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60">
-  <rect x="0" y="12" width="36" height="36" rx="4" fill="#EF3B17"/>
-  <text x="48" y="40" font-family="'Unbounded', 'Hanken Grotesk', system-ui, sans-serif" font-weight="800" font-size="34" fill="#FFFFFF" letter-spacing="-0.5">Trellix</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 294 294" width="294" height="294">
+  <rect x="0" y="0" width="90" height="90" fill="#A822B0"/>
+  <path d="M114,0 H294 V90 H204 V294 H114 Z" fill="#FFFFFF"/>
 </svg>

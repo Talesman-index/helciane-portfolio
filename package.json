@@ -2,7 +2,7 @@
   "name": "helciane-portfolio",
   "version": "1.0.0",
   "private": true,
-  "description": "Portfolio officiel d'Helciane Hougbadji - Directrice Artistique & Graphic Designer",
+  "description": "Portfolio officiel d'Helciane Houngbadji - Directrice Artistique & Graphic Designer",
   "scripts": {
     "dev": "node server.js",
     "start": "node server.js",

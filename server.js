@@ -31,7 +31,7 @@ const server = http.createServer((req, res) => {
     reqUrl = '/index.html';
   }
 
-  const filePath = path.resolve(ROOT, '.' + reqUrl);
+  let filePath = path.resolve(ROOT, '.' + reqUrl);
 
   // Security: avoid path traversal
   if (!filePath.startsWith(ROOT)) {
@@ -79,7 +79,10 @@ const server = http.createServer((req, res) => {
         res.writeHead(200, {
           'Content-Type': contentType,
           'Accept-Ranges': 'bytes',
-          'Content-Length': stats.size
+          'Content-Length': stats.size,
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
         });
         res.end(content);
       }
@@ -88,5 +91,5 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`\n✨ Portfolio Helciane Hougbadji disponible sur : http://localhost:${PORT}\n`);
+  console.log(`\n✨ Portfolio Helciane Houngbadji disponible sur : http://localhost:${PORT}\n`);
 });

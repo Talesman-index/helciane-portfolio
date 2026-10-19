@@ -26,33 +26,20 @@
 
   /* ---------- 0a. Palettes chromatiques & Thèmes ---------- */
   const PALETTES = [
-    { id: 'classic', label: 'Marine & Rose', desc: 'Classique douce et intemporelle', swatch: 'classic' },
-    { id: 'solaire', label: 'Solaire & Terracotta', desc: 'Chaleureuse, éditoriale & moderne', swatch: 'solaire' },
-    { id: 'champagne', label: 'Studio & Champagne', desc: 'Élégance haute joaillerie & or cognac', swatch: 'champagne' },
-    { id: 'matcha', label: 'Matcha & Sorbet', desc: 'Organique, sauge & sorbet framboise', swatch: 'matcha' },
-    { id: 'cobalt', label: 'Cobalt & Néon', desc: 'Bleu Klein électrique & magenta néon', swatch: 'cobalt' }
+    { id: 'matcha', label: 'Matcha & Sorbet', desc: 'Organique, sauge & sorbet framboise', swatch: 'matcha' }
   ];
 
-  const getSavedPalette = () => {
-    try { return localStorage.getItem('cc-palette') || 'solaire'; }
-    catch (e) { return 'solaire'; }
-  };
+  const getSavedPalette = () => 'matcha';
 
-  const applyPalette = (id, save = true) => {
-    const valid = PALETTES.some(p => p.id === id) ? id : 'solaire';
-    root.setAttribute('data-palette', valid);
+  const applyPalette = (id = 'matcha', save = true) => {
+    root.setAttribute('data-palette', 'matcha');
     if (save) {
-      try { localStorage.setItem('cc-palette', valid); } catch (e) {}
+      try { localStorage.setItem('cc-palette', 'matcha'); } catch (e) {}
     }
-    $$('.palette-btn').forEach(btn => {
-      const isCur = btn.dataset.paletteId === valid;
-      btn.setAttribute('aria-checked', isCur ? 'true' : 'false');
-      btn.classList.toggle('is-active', isCur);
-    });
   };
 
-  // Restauration immédiate
-  applyPalette(getSavedPalette(), false);
+  // Restauration immédiate (palette Matcha & Sorbet active par défaut)
+  applyPalette('matcha', true);
   const fontsReady = Promise.race([document.fonts ? document.fonts.ready : Promise.resolve(), wait(1500)]);
   // « gate » s'ouvre quand l'animation d'arrivée / la transition laisse voir la page
   let openGate; const gate = new Promise(r => { openGate = r; });
@@ -806,12 +793,9 @@ void main(){
         lbVideo.src = '';
       }
       lbImg.style.display = 'block';
-      lbImg.style.opacity = '0';
+      lbImg.style.opacity = '';
       lbImg.src = item.src;
       lbImg.alt = item.caption || item.projectTitle || '';
-      requestAnimationFrame(() => {
-        lbImg.style.opacity = '1';
-      });
     }
 
     $$('.lb-thumb', lbThumbs).forEach((th, idx) => {
@@ -821,9 +805,13 @@ void main(){
     });
   };
 
+  let lastOpenTime = 0;
+
   const openGallery = (items, startIdx = 0) => {
+    if (!items || !items.length) return;
     galleryList = items;
     previousFocus = document.activeElement;
+    lastOpenTime = Date.now();
     renderThumbs();
     showItem(startIdx);
     lb.classList.add('open');
@@ -836,6 +824,10 @@ void main(){
     if (!lb.classList.contains('open')) return;
     lb.classList.remove('open');
     lbWrap.classList.remove('is-zoomed');
+    if (lbImg) {
+      lbImg.style.display = 'none';
+      lbImg.src = '';
+    }
     if (lbVideo) {
       lbVideo.pause();
       lbVideo.src = '';
@@ -851,6 +843,7 @@ void main(){
   };
 
   lb.addEventListener('click', e => {
+    if (Date.now() - lastOpenTime < 280) return; // Eviter fermeture instantanee sur le clic d'ouverture
     if (e.target.closest('.lb-close')) {
       closeGallery();
     } else if (e.target.closest('.lb-prev')) {
@@ -863,7 +856,7 @@ void main(){
       toggleZoom();
     } else if (e.target === lbImg) {
       toggleZoom();
-    } else if (!e.target.closest('.lb-header') && !e.target.closest('.lb-footer') && !e.target.closest('.lb-media-wrap')) {
+    } else if (!e.target.closest('.lb-header') && !e.target.closest('.lb-footer') && (e.target === lb || e.target.classList.contains('lb-stage'))) {
       closeGallery();
     }
   });
@@ -907,8 +900,8 @@ void main(){
         const titleEl = proj.querySelector('.proj-title') || proj.querySelector('h2');
         const projTitle = titleEl ? titleEl.textContent.trim() : 'Projet';
 
-        const visualFigures = $$('.gal-item, .poster, .anim, figure:has(img), figure:has(video)', proj)
-          .filter(f => !f.closest('[data-clone]'));
+        const visualFigures = $$('.gal-item, .gal-item--video, .poster, .anim, figure', proj)
+          .filter(f => !f.closest('[data-clone]') && !!($('img', f) || $('video', f)));
 
         const projectItems = [];
         visualFigures.forEach(fig => {
@@ -945,13 +938,18 @@ void main(){
         projectItems.forEach((item, itemIdx) => {
           const fig = item.fig;
           if (!fig) return;
+          const isVideoFigure = !!fig.querySelector('.player, video');
+
           fig.tabIndex = 0;
           fig.setAttribute('role', 'button');
-          fig.setAttribute('data-cursor', 'Agrandir');
+          if (!isVideoFigure) {
+            fig.setAttribute('data-cursor', 'Agrandir');
+          }
           fig.setAttribute('aria-label', `Ouvrir dans la galerie : ${item.caption}`);
 
           const clickHandler = e => {
-            if (e.target.closest('.player-ui, .pl-sound, .pl-seek, .pl-play')) return;
+            if (e.target.closest('.player-ui, .pl-sound, .pl-seek, .pl-play, .play')) return;
+            if (isVideoFigure && e.target.closest('.player, video')) return;
             e.preventDefault();
             e.stopPropagation();
             openGallery(projectItems, itemIdx);
@@ -960,6 +958,7 @@ void main(){
           fig.addEventListener('click', clickHandler);
           fig.addEventListener('keydown', e => {
             if (e.key === 'Enter' || e.key === ' ') {
+              if (isVideoFigure && e.target.closest('.player, video')) return;
               e.preventDefault();
               openGallery(projectItems, itemIdx);
             }
@@ -1028,6 +1027,85 @@ void main(){
   };
 
   bindGalleryTriggers();
+
+  // Delegation globale infaillible pour agrandir tous les visuels et projets au clic
+  document.addEventListener('click', e => {
+    // Si la visionneuse est ouverte, ne pas reimporter
+    if (lb && lb.classList.contains('open')) return;
+
+    // Ne pas intercepter les controles video, sons ou liens
+    if (e.target.closest('.player-ui, .pl-sound, .pl-seek, .pl-play, .play, video, a, button')) return;
+
+    // Detecter tout element visuel d'un projet
+    const visual = e.target.closest('.gal-item, .gal-media, .proj-media figure, .ph-visual .cover, [data-lightbox] figure, .poster, .anim');
+    if (!visual) return;
+
+    // Cas 1 : Couverture en en-tete de page de projet (.ph-visual .cover)
+    if (visual.closest('.ph-visual')) {
+      const im = $('img', visual.closest('.cover') || visual);
+      if (!im) return;
+      e.preventDefault();
+      e.stopPropagation();
+      openGallery([{
+        type: 'image',
+        src: im.dataset.full || im.currentSrc || im.src,
+        thumb: im.dataset.full || im.currentSrc || im.src,
+        projectTitle: $('h1')?.textContent.trim() || document.title.split('·')[0].trim() || 'Projet',
+        caption: im.alt || 'Visuel de présentation'
+      }], 0);
+      return;
+    }
+
+    // Cas 2 : Visuel dans la galerie d'un projet
+    const proj = visual.closest('article.proj') || visual.closest('section.projects') || visual.closest('.proj-media') || document;
+    const figs = $$('.gal-item, .proj-media figure, [data-lightbox] figure, .poster, .anim', proj)
+      .filter(f => !f.closest('[data-clone]') && !!($('img', f) || $('video', f)));
+
+    if (!figs.length) return;
+
+    const titleEl = proj.querySelector?.('.proj-title') || proj.querySelector?.('h2') || $('h1');
+    const projTitle = titleEl ? titleEl.textContent.trim() : document.title.split('·')[0].trim();
+
+    const items = [];
+    figs.forEach(f => {
+      const v = $('video', f);
+      const im = $('img', f);
+      if (v) {
+        const vSrc = v.currentSrc || $('source', v)?.src || v.src;
+        if (vSrc) {
+          items.push({
+            type: 'video',
+            src: vSrc,
+            poster: v.poster || (im ? im.src : ''),
+            thumb: v.poster || (im ? im.src : ''),
+            projectTitle: projTitle,
+            caption: `${projTitle} · Vidéo Motion / Animation`,
+            fig: f
+          });
+        }
+      } else if (im) {
+        const imSrc = im.dataset.full || im.currentSrc || im.src;
+        if (imSrc) {
+          items.push({
+            type: 'image',
+            src: imSrc,
+            thumb: imSrc,
+            projectTitle: projTitle,
+            caption: im.alt || `${projTitle} · Visuel`,
+            fig: f
+          });
+        }
+      }
+    });
+
+    const targetFig = visual.closest('figure') || visual;
+    let clickedIdx = items.findIndex(it => it.fig === targetFig || it.fig?.contains(targetFig) || targetFig.contains(it.fig));
+    if (clickedIdx < 0) clickedIdx = 0;
+
+    e.preventDefault();
+    e.stopPropagation();
+    openGallery(items, clickedIdx);
+  });
 
   /* ---------- 13. Vidéos : lecture quand elles sont visibles ---------- */
   const vIO = new IntersectionObserver(entries => entries.forEach(e => {
@@ -1235,14 +1313,17 @@ void main(){
 
     // Catalogue des projets pour suggestions riches
     const CATALOGUE_SUGGESTIONS = [
-      { id: 'solar-stark', page: 'branding.html#projet-1', cat: 'Branding', title: 'Solar Stark Club', sub: 'Tennis & Lifestyle', img: 'images/realisations/solar-stark-couverture.png' },
-      { id: 'sorberro', page: 'packagings.html#projet-1', cat: 'Packagings', title: 'Sorberro · Pure Freeze', sub: 'Glaces Artisanales & Food Truck', img: 'images/realisations/sorberro-couverture.png' },
-      { id: 'demeter-bowl', page: 'packagings.html#projet-2', cat: 'Packagings', title: "Demeter's Bowl", sub: 'Salad Bar & Bols Fraîcheur', img: 'images/realisations/demeter-bowl-couverture.png' },
-      { id: 'coffee-loffee', page: 'branding.html#projet-3', cat: 'Branding', title: 'Coffee Loffee', sub: 'Coffee Shop & Univers Graphique', img: 'MES%20PROJETS/COFFEE%20LOFEE/coffeeloffee%20copie-01.png' },
-      { id: 'canalbox', page: 'campagnes.html#projet-1', cat: 'Campagnes', title: 'Campagne Canalbox', sub: 'Social Media & Visuels 360°', img: 'MES%20PROJETS/CANALBOX%20PROJECTS/CANALBOX-01.png' },
-      { id: 'meet-n-eat', page: 'direction-artistique.html#projet-2', cat: 'Direction Artistique', title: "Meet N' Eat", sub: 'Food & Événementiel', img: "MES%20PROJETS/MEET%20N'%20EAT/MEET%20N'%20EAT-01.png" },
-      { id: 'baudelaire', page: 'signaletique.html#projet-1', cat: 'Signalétique', title: 'Bibliothèque Baudelaire', sub: "Design d'Espace & Pictogrammes", img: 'MES%20PROJETS/BAUDELAIRE/BAUDELAIRE-01.png' },
-      { id: 'peace-page', page: 'design-social.html#projet-2', cat: 'Design Social', title: 'Peace Page', sub: 'Notebook & Campagne Santé Mentale', img: 'MES%20PROJETS/PEACE%20PAGE/PEACE%20PAGE-01.png' }
+      { id: 'solar-stark', page: 'solar-stark.html', cat: 'Branding', title: 'Solar Stark Club', sub: 'Tennis & Lifestyle', img: 'images/realisations/solar-stark-couverture.png' },
+      { id: 'sorberro', page: 'sorberro.html', cat: 'Packagings', title: 'Sorberro · Pure Freeze', sub: 'Glaces Artisanales & Food Truck', img: 'images/realisations/sorberro-couverture.png' },
+      { id: 'demeter-bowl', page: 'demeter-bowl.html', cat: 'Packagings', title: "Demeter's Bowl", sub: 'Salad Bar & Bols Fraîcheur', img: 'images/realisations/demeter-bowl-couverture.png' },
+      { id: 'coffee-lofee', page: 'coffee-lofee.html', cat: 'Branding', title: 'Coffee Lofee', sub: 'Coffee Shop & Univers Graphique', img: 'MES%20PROJETS/COFFEE%20LOFEE/coffeeloffee%20copie-01.png' },
+      { id: 'peace-page', page: 'peace-page.html', cat: 'Design Social', title: 'Peace Page', sub: 'Santé Mentale & Carnet Introspectif', img: 'images/realisations/peace-page-couverture.jpg' },
+      { id: 'trellix-iconic', page: 'iconic-love.html', cat: 'Cosmétiques & UI', title: 'Iconic Love · Trellix', sub: 'Cosmétiques & Beans UI', img: 'images/realisations/trellix-couverture.png' },
+      { id: 'waste-tobag', page: 'waste-tobag.html', cat: 'Design Social', title: 'Waste Tobag', sub: 'Sensibilisation Urbaine & Éco-citoyenneté', img: 'MES%20PROJETS/WASTE%20TOBAG/%20WASTE%20TOBAG.png' },
+      { id: 'home-residence', page: 'home-residence.html', cat: 'Direction Artistique', title: 'HOME Residence Hotel', sub: 'Soirées Prestige & Scénographie', img: 'MES%20PROJETS/HOME/HOME-01.png' },
+      { id: 'canalbox', page: 'canalbox.html', cat: 'Événementiel & Campagnes', title: 'Canalbox Bénin', sub: 'Inauguration & Fibre Optique', img: 'MES%20PROJETS/CANALBOX%20PROJECTS/CANALBOX-01.png' },
+      { id: 'canal-plus', page: 'canal-plus.html', cat: 'Campagnes', title: 'Canal+ Bénin', sub: 'Campagnes Digitales 360°', img: 'MES%20PROJETS/CANAL+PROJECTS/CANAL+PROJECTS-01.png' },
+      { id: 'baudelaire', page: 'baudelaire.html', cat: 'Signalétique', title: 'Bibliothèque Baudelaire', sub: "Design d'Espace & Pictogrammes", img: 'MES%20PROJETS/BAUDELAIRE/BAUDELAIRE-01.png' }
     ];
 
     // Création du bloc suggestions
@@ -1262,7 +1343,7 @@ void main(){
       const samePage = pageProjs.filter(p => p.id !== activeId).map(p => {
         const n = $('.proj-n', p)?.textContent.trim() || '';
         const title = $('.proj-title', p)?.textContent.trim() || '';
-        const sub = $('.proj-meta dd', p)?.textContent.trim() || 'Réalisation Helciane Hougbadji';
+        const sub = $('.proj-meta dd', p)?.textContent.trim() || 'Réalisation Helciane Houngbadji';
         const img = p.dataset.cover || $('img', p)?.getAttribute('src') || '';
         return {
           page: `#${p.id}`,
@@ -1402,7 +1483,7 @@ void main(){
 
       // Mettre à jour le texte du badge circulaire
       if (heroBadgeText && activeTitle) {
-        heroBadgeText.textContent = `Helciane Hougbadji ✦ ${activeTitle} ✦ Portfolio ✦ `;
+        heroBadgeText.textContent = `Helciane Houngbadji ✦ ${activeTitle} ✦ Portfolio ✦ `;
       }
 
       // Mettre à jour les outils du hero avec ceux du projet actif
@@ -1469,7 +1550,8 @@ void main(){
   const blocked = (p, on) => p.classList.toggle('sound-blocked', on);
   function startPlayer(p) {
     const v = $('video', p);
-    players.forEach(o => { if (o !== p) { const ov = $('video', o); ov.pause(); if (autoSound) ov.muted = true; blocked(o, false); } });
+    if (!v) return;
+    players.forEach(o => { if (o !== p) { const ov = $('video', o); if (ov) { ov.pause(); if (autoSound) ov.muted = true; blocked(o, false); } } });
     current = p; p.classList.remove('user-paused'); p.retries = 0;
     if (autoSound && wantSound && hasSound(p)) {
       v.muted = false;
@@ -1479,75 +1561,138 @@ void main(){
         v.muted = true; blocked(p, true);   // son refusé par le navigateur : on joue sans le son
         const p2 = v.play(); if (p2) p2.catch(() => {});
       });
-    } else { const pr = v.play(); if (pr) pr.catch(() => {}); }
+    } else {
+      v.muted = true;
+      const pr = v.play(); if (pr) pr.catch(() => {});
+    }
   }
-  // deux seuils : la vidéo démarre à 60 % visible ; à 95 %, elle repart si le navigateur l'a mise en pause
-  // pendant le défilement (vidéo sans le son) — sauf si c'est le visiteur qui l'a mise en pause
+  // Seuil souple pour démarrer à l'écran et ne couper que quand la vidéo quitte réellement la vue
   const playerIO = new IntersectionObserver(entries => entries.forEach(e => {
     const p = e.target, v = $('video', p);
-    if (e.isIntersecting && e.intersectionRatio >= .59) {
-      if (current !== p) startPlayer(p);
+    if (!v) return;
+    if (e.isIntersecting && e.intersectionRatio >= .25) {
+      if (current !== p && !p.classList.contains('user-paused')) startPlayer(p);
       else if (v.paused && !v.ended && !p.classList.contains('user-paused')) { const pr = v.play(); if (pr) pr.catch(() => {}); }
-    } else if (current === p || !v.paused) {
+    } else if (!e.isIntersecting || e.intersectionRatio < .15) {
       v.pause(); blocked(p, false);
       if (autoSound) v.muted = true;
       if (current === p) current = null;
     }
-  }), { threshold: [.6, .95] });
+  }), { threshold: [0.15, 0.25, 0.7] });
   if (autoSound) {
     // premier clic ou touche ailleurs sur la page : le son de la vidéo à l'écran démarre
     const unlock = e => {
       if (!wantSound || !current || !current.classList.contains('sound-blocked') || e.target.closest('.player, a')) return;
       const p = current, v = $('video', p);
+      if (!v) return;
       v.muted = false; blocked(p, false);
       const pr = v.play(); if (pr) pr.catch(() => { v.muted = true; blocked(p, true); const p2 = v.play(); if (p2) p2.catch(() => {}); });
     };
     ['pointerdown', 'touchend', 'keydown'].forEach(t => addEventListener(t, unlock, true));
   }
   players.forEach(p => {
-    const v = $('video', p), snd = $('.pl-sound', p), full = $('.pl-full', p);
-    if (!full) return;
+    const v = $('video', p), snd = $('.pl-sound', p), full = $('.pl-full', p), centerPlay = $('.play', p), playBtn = $('.pl-play', p);
+    if (!v) return;
     v.addEventListener('error', () => p.classList.add('missing'), true);
+
+    const syncState = () => {
+      const isPaused = v.paused;
+      p.classList.toggle('playing', !isPaused);
+      p.classList.toggle('is-playing', !isPaused);
+      if (playBtn) playBtn.setAttribute('aria-label', isPaused ? 'Lire la vidéo' : 'Mettre en pause');
+    };
+
     const syncSound = () => {
       if (!snd) return;   // vidéo sans son : pas de bouton son
       snd.setAttribute('aria-pressed', !v.muted);
-      $('.pl-txt', snd).textContent = v.muted ? 'Activer le son' : 'Couper le son';
+      const txt = $('.pl-txt', snd);
+      if (txt) txt.textContent = v.muted ? 'Activer le son' : 'Couper le son';
       p.classList.toggle('sound-on', !v.muted);
     };
+
+    const togglePlay = () => {
+      if (v.paused) {
+        p.classList.remove('user-paused');
+        players.forEach(o => {
+          if (o !== p) {
+            const ov = $('video', o);
+            if (ov) ov.pause();
+            o.classList.remove('playing', 'is-playing');
+          }
+        });
+        const pr = v.play();
+        if (pr) {
+          pr.then(() => {
+            syncState();
+          }).catch(err => {
+            console.warn('Lecture vidéo avec son bloquée par le navigateur, tentative en muet :', err);
+            v.muted = true;
+            syncSound();
+            v.play().then(syncState).catch(() => {});
+          });
+        }
+      } else {
+        p.classList.add('user-paused');
+        v.pause();
+        syncState();
+      }
+    };
+
     const toggleSound = () => {
       v.muted = !v.muted;
-      if (autoSound) { wantSound = !v.muted; blocked(p, false); }   // couper le son : les suivantes restent sans le son
-      if (!v.muted) players.forEach(o => { if (o !== p) { const ov = $('video', o); ov.muted = true; o.classList.remove('sound-on'); } });
+      if (autoSound) { wantSound = !v.muted; blocked(p, false); }
+      if (!v.muted) {
+        players.forEach(o => {
+          if (o !== p) {
+            const ov = $('video', o);
+            if (ov) { ov.muted = true; o.classList.remove('sound-on'); }
+          }
+        });
+      }
       syncSound();
-      const pr = v.play(); if (pr) pr.catch(() => {});
+      if (v.paused) {
+        const pr = v.play();
+        if (pr) pr.catch(() => {});
+      }
     };
+
+    // Le clic sur le bouton central, sur la vidéo ou sur le bouton de barre lance / met en pause
+    if (centerPlay) centerPlay.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); togglePlay(); });
+    v.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); togglePlay(); });
+    if (playBtn) playBtn.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); togglePlay(); });
+
     if (snd) {
-      snd.addEventListener('click', e => { e.stopPropagation(); toggleSound(); });
-      v.addEventListener('click', toggleSound);   // un clic sur la vidéo active ou coupe le son
-    } else {
-      v.addEventListener('click', () => { p.classList.toggle('user-paused', !v.paused); if (v.paused) { const pr = v.play(); if (pr) pr.catch(() => {}); } else v.pause(); });   // sans son : un clic met en pause ou relance
+      snd.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); toggleSound(); });
     }
+
+    v.addEventListener('play', syncState);
+    v.addEventListener('pause', syncState);
     v.addEventListener('volumechange', syncSound);
-    // le navigateur peut mettre en pause une vidéo sans le son pendant le défilement : on la relance (3 essais au plus),
-    // jamais quand c'est le visiteur qui l'a mise en pause ou qu'elle est en plein écran
+
+    // le navigateur peut mettre en pause une vidéo sans le son pendant le défilement : on la relance si pas user-paused
     v.addEventListener('pause', () => {
+      syncState();
       if (current !== p || p.classList.contains('user-paused') || v.controls || v.ended || (p.retries = (p.retries || 0) + 1) > 3) return;
       setTimeout(() => { if (current === p && v.paused && !p.classList.contains('user-paused')) { const pr = v.play(); if (pr) pr.catch(() => {}); } }, 400);
     });
-    full.addEventListener('click', e => {
-      e.stopPropagation();
-      if (v.requestFullscreen) v.requestFullscreen().catch(() => {});
-      else if (v.webkitRequestFullscreen) v.webkitRequestFullscreen();
-      else if (v.webkitEnterFullscreen) v.webkitEnterFullscreen();   // iPhone
-      const pr = v.play(); if (pr) pr.catch(() => {});
-    });
-    // en plein écran : les commandes habituelles (pause, avance, volume) apparaissent
-    const onFs = () => { const fs = (document.fullscreenElement || document.webkitFullscreenElement) === v; v.controls = fs; };
-    document.addEventListener('fullscreenchange', onFs);
-    document.addEventListener('webkitfullscreenchange', onFs);
-    v.addEventListener('webkitendfullscreen', () => { v.controls = false; });
-    // barre de temps : lecture/pause, minutage et curseur pour avancer ou reculer
-    const playBtn = $('.pl-play', p), seek = $('.pl-seek', p), tCur = $('.pl-time', p), tDur = $('.pl-dur', p);
+
+    if (full) {
+      full.addEventListener('click', e => {
+        e.stopPropagation();
+        if (v.requestFullscreen) v.requestFullscreen().catch(() => {});
+        else if (v.webkitRequestFullscreen) v.webkitRequestFullscreen();
+        else if (v.webkitEnterFullscreen) v.webkitEnterFullscreen();   // iPhone
+        const pr = v.play(); if (pr) pr.catch(() => {});
+      });
+      // en plein écran : les commandes habituelles apparaissent
+      const onFs = () => { const fs = (document.fullscreenElement || document.webkitFullscreenElement) === v; v.controls = fs; };
+      document.addEventListener('fullscreenchange', onFs);
+      document.addEventListener('webkitfullscreenchange', onFs);
+      v.addEventListener('webkitendfullscreen', () => { v.controls = false; });
+    }
+
+    // barre de temps : curseur pour avancer ou reculer
+    const seek = $('.pl-seek', p), tCur = $('.pl-time', p), tDur = $('.pl-dur', p);
     if (seek) {
       const fmt = t => { t = Math.max(0, Math.floor(t || 0)); return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')}`; };
       let dragging = false, raf = 0;
@@ -1555,30 +1700,25 @@ void main(){
         const d = v.duration;
         if (d && isFinite(d)) {
           if (!dragging) seek.value = Math.round(v.currentTime / d * 1000);
-          tCur.textContent = fmt(dragging ? seek.value / 1000 * d : v.currentTime);
-          tDur.textContent = fmt(d);
+          if (tCur) tCur.textContent = fmt(dragging ? seek.value / 1000 * d : v.currentTime);
+          if (tDur) tDur.textContent = fmt(d);
         }
         seek.style.setProperty('--p', seek.value / 10 + '%');
       };
       const loop = () => { paint(); raf = v.paused ? 0 : requestAnimationFrame(loop); };
       v.addEventListener('loadedmetadata', paint);
       v.addEventListener('timeupdate', paint);
-      v.addEventListener('play', () => { p.classList.add('is-playing'); playBtn.setAttribute('aria-label', 'Mettre en pause'); if (!raf) raf = requestAnimationFrame(loop); });
-      v.addEventListener('pause', () => { p.classList.remove('is-playing'); playBtn.setAttribute('aria-label', 'Lire la vidéo'); });
+      v.addEventListener('play', () => { if (!raf) raf = requestAnimationFrame(loop); });
       const jump = () => { const d = v.duration; if (d && isFinite(d)) v.currentTime = seek.value / 1000 * d; paint(); };
       seek.addEventListener('pointerdown', () => { dragging = true; });
       seek.addEventListener('input', () => { dragging = true; jump(); });
       seek.addEventListener('change', () => { dragging = false; jump(); });
       seek.addEventListener('pointerup', () => { dragging = false; });
-      if (!v.duration) { v.preload = 'metadata'; }   // pour connaître la durée avant la lecture
-      playBtn.addEventListener('click', e => {
-        e.stopPropagation();
-        if (v.paused) { p.classList.remove('user-paused'); players.forEach(o => { if (o !== p) $('video', o).pause(); }); const pr = v.play(); if (pr) pr.catch(() => {}); }
-        else { p.classList.add('user-paused'); v.pause(); }
-      });
+      if (!v.duration) { v.preload = 'auto'; }   // précharger pour connaître la durée avant la lecture
       paint();
     }
     syncSound();
+    syncState();
     playerIO.observe(p);
   });
   // motion design : un clic active ou coupe le son de l'animation
@@ -1652,36 +1792,9 @@ void main(){
 
   /* ---------- 16. Sélecteur interactif de palettes chromatiques ---------- */
   const initPaletteSwitcher = () => {
-    if ($('.palette-switcher')) return;
-    const cur = getSavedPalette();
-    const aside = document.createElement('aside');
-    aside.className = 'palette-switcher';
-    aside.setAttribute('aria-label', 'Sélecteur de palette chromatique');
-    
-    let html = `<div class="palette-label"><span class="palette-spark" aria-hidden="true">✦</span><span>Couleurs</span></div>`;
-    html += `<div class="palette-options" role="radiogroup" aria-label="Harmonies de couleurs du portfolio">`;
-    PALETTES.forEach(p => {
-      const isCur = p.id === cur;
-      html += `<button type="button" class="palette-btn ${isCur ? 'is-active' : ''}" data-palette-id="${p.id}" role="radio" aria-checked="${isCur ? 'true' : 'false'}" aria-label="${p.label} : ${p.desc}">
-        <span class="palette-swatch swatch--${p.swatch}" aria-hidden="true"></span>
-        <span class="palette-tooltip">${p.label}</span>
-      </button>`;
-    });
-    html += `</div>`;
-    aside.innerHTML = html;
-    document.body.appendChild(aside);
-
-    $$('.palette-btn', aside).forEach(btn => {
-      btn.addEventListener('click', () => {
-        const id = btn.dataset.paletteId;
-        applyPalette(id, true);
-        if (typeof Sound !== 'undefined' && Sound && Sound.click) Sound.click();
-      });
-    });
-
-    // Apparition progressive après chargement
-    setTimeout(() => aside.classList.add('is-ready'), 600);
-    gate.then(() => setTimeout(() => aside.classList.add('is-ready'), 250)).catch(() => {});
+    // Désactivé : seule la palette Matcha & Sorbet est conservée pour l'instant
+    const existing = $('.palette-switcher');
+    if (existing) existing.remove();
   };
 
   if (document.readyState === 'loading') {
